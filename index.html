@@ -376,8 +376,31 @@
         </div>
       </div>
       
-      <!-- Placeholder for Morse keyer widget in next task -->
-      <div id="morse-keyer-container"></div>
+      <!-- MORSE CODE KEYER CARD -->
+      <div class="console-card">
+        <div class="card-header">
+          <span>CW Morse Keyer</span>
+          <span style="font-size:0.7rem; color:var(--accent-amber);">700 Hz sidetone</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          <div style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; gap:0.25rem;">
+            <span style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase;">Decoded Text</span>
+            <div id="morse-output" style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-green); word-break:break-all; min-height:24px;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
+            <div>
+              <label style="color:var(--text-secondary); font-size:0.7rem;">WPM Speed</label>
+              <input type="range" id="wpm-slider" min="10" max="30" value="18" style="vertical-align:middle; width:80px; margin-left:0.4rem;">
+              <span id="wpm-label" style="font-family:'JetBrains Mono', monospace; margin-left:0.25rem;">18</span>
+            </div>
+            <button onclick="clearMorseText()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.7rem; cursor:pointer; font-family:'Outfit', sans-serif;">Clear</button>
+          </div>
+          <!-- KEY BUTTON -->
+          <button id="morse-key-btn" style="background:var(--bg-card); border:2px solid var(--border-color); height:80px; border-radius:8px; cursor:pointer; color:var(--text-secondary); font-weight:bold; font-size:0.9rem; transition:all 0.1s ease; user-select:none; font-family:'Outfit', sans-serif; outline:none;">
+            PRESS SPACEBAR / HOLD CLICK
+          </button>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -629,6 +652,144 @@
 
     // Render on initial load
     renderQSOs();
+
+    // CW Morse Code keyer logic
+    let audioCtx = null;
+    let oscillator = null;
+    let gainNode = null;
+    let keyIsDown = false;
+    let keyDownTime = 0;
+    let keyUpTime = 0;
+    let currentLetterSignal = '';
+    let morseTimer = null;
+
+    const MORSE_CODE = {
+      '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E',
+      '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J',
+      '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O',
+      '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T',
+      '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y',
+      '--..': 'Z', '-----': '0', '.----': '1', '..---': '2', '...--': '3',
+      '....-': '4', '.....': '5', '-....': '6', '--...': '7', '---..': '8',
+      '----.': '9', '.-.-.-': '.', '--..--': ',', '..--..': '?', '.----.': "'",
+      '-..-.': '/', '-...-': '='
+    };
+
+    const wpmSlider = document.getElementById('wpm-slider');
+    const wpmLabel = document.getElementById('wpm-label');
+    wpmSlider.oninput = () => wpmLabel.textContent = wpmSlider.value;
+
+    function initAudio() {
+      if (audioCtx) return;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function startTone() {
+      if (!powerOn) return;
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      
+      oscillator = audioCtx.createOscillator();
+      gainNode = audioCtx.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 700;
+      
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.005);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.start();
+    }
+
+    function stopTone() {
+      if (!oscillator) return;
+      const releaseTime = audioCtx.currentTime + 0.005;
+      gainNode.gain.linearRampToValueAtTime(0, releaseTime);
+      oscillator.stop(releaseTime);
+      oscillator = null;
+    }
+
+    function handleKeyDown() {
+      if (keyIsDown || !powerOn) return;
+      keyIsDown = true;
+      startTone();
+      keyDownTime = performance.now();
+      
+      const keyBtn = document.getElementById('morse-key-btn');
+      keyBtn.style.borderColor = 'var(--accent-amber)';
+      keyBtn.style.background = 'var(--accent-glow-amber)';
+      
+      if (morseTimer) clearTimeout(morseTimer);
+    }
+
+    function handleKeyUp() {
+      if (!keyIsDown) return;
+      keyIsDown = false;
+      stopTone();
+      keyUpTime = performance.now();
+      
+      const keyBtn = document.getElementById('morse-key-btn');
+      keyBtn.style.borderColor = 'var(--border-color)';
+      keyBtn.style.background = 'var(--bg-card)';
+      
+      const duration = keyUpTime - keyDownTime;
+      const wpm = parseInt(wpmSlider.value);
+      const dotLength = 1200 / wpm;
+      
+      if (duration < dotLength * 1.5) {
+        currentLetterSignal += '.';
+      } else {
+        currentLetterSignal += '-';
+      }
+      
+      morseTimer = setTimeout(() => {
+        decodeCharacter();
+      }, dotLength * 3.5);
+    }
+
+    function decodeCharacter() {
+      if (!currentLetterSignal) return;
+      const char = MORSE_CODE[currentLetterSignal] || '?';
+      document.getElementById('morse-output').textContent += char;
+      currentLetterSignal = '';
+      
+      const wpm = parseInt(wpmSlider.value);
+      const dotLength = 1200 / wpm;
+      morseTimer = setTimeout(() => {
+        document.getElementById('morse-output').textContent += ' ';
+      }, dotLength * 4);
+    }
+
+    function clearMorseText() {
+      document.getElementById('morse-output').textContent = '';
+      currentLetterSignal = '';
+    }
+
+    const keyBtn = document.getElementById('morse-key-btn');
+    keyBtn.addEventListener('mousedown', (e) => { e.preventDefault(); handleKeyDown(); });
+    keyBtn.addEventListener('mouseup', handleKeyUp);
+    keyBtn.addEventListener('mouseleave', handleKeyUp);
+    keyBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleKeyDown(); });
+    keyBtn.addEventListener('touchend', handleKeyUp);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        if (document.activeElement.tagName !== 'INPUT') {
+          e.preventDefault();
+          handleKeyDown();
+        }
+      }
+    });
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space') {
+        handleKeyUp();
+      }
+    });
   </script>
 </body>
 </html>
