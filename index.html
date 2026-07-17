@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AC3GX // Radio Shack Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0b0c10;
+      --bg-panel: #1a1a1f;
+      --bg-card: #202026;
+      --border-color: #2c3531;
+      --text-primary: #f5f5f7;
+      --text-secondary: #8e8e93;
+      --accent-green: #00ff87;
+      --accent-cyan: #00e5ff;
+      --accent-amber: #ffb300;
+      --accent-glow-green: rgba(0, 255, 135, 0.2);
+      --accent-glow-cyan: rgba(0, 229, 255, 0.2);
+      --accent-glow-amber: rgba(255, 179, 0, 0.2);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    header {
+      background: var(--bg-panel);
+      border-bottom: 2px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo-call {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+    .logo-led {
+      width: 10px;
+      height: 10px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 2s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.4; box-shadow: 0 0 2px var(--accent-green); }
+      100% { opacity: 1; box-shadow: 0 0 12px var(--accent-green); }
+    }
+    .clocks-section {
+      display: flex;
+      gap: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .clock-item {
+      background: var(--bg-card);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      min-width: 130px;
+      text-align: center;
+    }
+    .clock-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      display: block;
+    }
+    .clock-time {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--accent-cyan);
+    }
+    .status-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .freq-display {
+      color: var(--accent-amber);
+      font-weight: bold;
+    }
+    .power-btn {
+      background: transparent;
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .power-btn:hover {
+      background: var(--accent-green);
+      color: var(--bg-primary);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+    .power-btn.off {
+      border-color: var(--text-secondary);
+      color: var(--text-secondary);
+    }
+    .power-btn.off:hover {
+      background: var(--text-secondary);
+      color: var(--bg-primary);
+      box-shadow: none;
+    }
+    .console-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 280px 1fr 300px;
+      gap: 1.25rem;
+      padding: 1.25rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (max-width: 1024px) {
+      .console-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .console-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .console-card {
+      background: var(--bg-panel);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .card-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      margin-top: auto;
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+      .logo-section { justify-content: center; }
+      .clocks-section { justify-content: center; }
+      .status-section { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <div class="logo-call">AC3GX</div>
+      <div class="logo-led" id="power-led"></div>
+    </div>
+    <div class="clocks-section">
+      <div class="clock-item">
+        <span class="clock-label">Local Time</span>
+        <span class="clock-time" id="local-clock">00:00:00</span>
+      </div>
+      <div class="clock-item">
+        <span class="clock-label">UTC Time</span>
+        <span class="clock-time" id="utc-clock">00:00:00</span>
+      </div>
+    </div>
+    <div class="status-section">
+      <div>Freq: <span class="freq-display" id="freq-text">14.074 MHz</span></div>
+      <button class="power-btn" id="power-btn" onclick="togglePower()">PWR ON</button>
+    </div>
+  </header>
+
+  <main class="console-grid" id="console-grid">
+    <!-- Content columns go here -->
+  </main>
+
+  <footer>
+    AC3GX Radio Shack Console &copy; 2026. Made with Google Antigravity IDE.
+  </footer>
+
+  <script>
+    let powerOn = true;
+
+    function updateClocks() {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      
+      // Local clock
+      const lH = pad(now.getHours());
+      const lM = pad(now.getMinutes());
+      const lS = pad(now.getSeconds());
+      document.getElementById('local-clock').textContent = `${lH}:${lM}:${lS}`;
+
+      // UTC clock
+      const uH = pad(now.getUTCHours());
+      const uM = pad(now.getUTCMinutes());
+      const uS = pad(now.getUTCSeconds());
+      document.getElementById('utc-clock').textContent = `${uH}:${uM}:${uS}`;
+    }
+
+    function togglePower() {
+      powerOn = !powerOn;
+      const btn = document.getElementById('power-btn');
+      const led = document.getElementById('power-led');
+      const grid = document.getElementById('console-grid');
+      
+      if (powerOn) {
+        btn.textContent = "PWR ON";
+        btn.classList.remove('off');
+        led.style.backgroundColor = "var(--accent-green)";
+        led.style.boxShadow = "0 0 10px var(--accent-green)";
+        grid.style.opacity = "1";
+        grid.style.pointerEvents = "auto";
+      } else {
+        btn.textContent = "PWR OFF";
+        btn.classList.add('off');
+        led.style.backgroundColor = "#ff3b30";
+        led.style.boxShadow = "0 0 10px #ff3b30";
+        grid.style.opacity = "0.2";
+        grid.style.pointerEvents = "none";
+      }
+    }
+
+    setInterval(updateClocks, 1000);
+    updateClocks();
+  </script>
+</body>
+</html>
