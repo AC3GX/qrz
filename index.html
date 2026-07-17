@@ -211,7 +211,49 @@
   </header>
 
   <main class="console-grid" id="console-grid">
-    <!-- Content columns go here -->
+    <!-- LEFT COLUMN -->
+    <div class="left-col" style="display:flex; flex-direction:column; gap:1.25rem;">
+      <!-- BIO / STATION CARD -->
+      <div class="console-card">
+        <div class="card-header">
+          <span>Station Profile</span>
+          <span style="font-size:0.7rem; color:var(--accent-green);">● ACTIVE</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.9rem;">
+          <div style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+            <strong style="font-size:1.1rem; color:var(--accent-green); font-family:'JetBrains Mono', monospace;">AC3GX</strong>
+            <div style="color:var(--text-secondary); font-size:0.75rem; margin-top:0.2rem;">Amateur Radio Station</div>
+          </div>
+          <div><strong>Operator:</strong> Alex</div>
+          <div><strong>Location:</strong> Maryland, USA</div>
+          <div><strong>Grid Square:</strong> FM19ff</div>
+          <div><strong>License Class:</strong> Extra</div>
+          <div style="border-top:1px solid var(--border-color); margin-top:0.5rem; padding-top:0.5rem;">
+            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.25rem;">Rig / Hardware</div>
+            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">ICOM IC-7300 (HF)</div>
+            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">LDG IT-100 Tuner</div>
+            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">80-10m End Fed Wire</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DMR MONITOR CARD -->
+      <div class="console-card">
+        <div class="card-header">
+          <span>DMR Live Monitor</span>
+          <span style="font-size:0.7rem; color:var(--accent-cyan);">BM LINK</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:0.5rem; flex:1;">
+          <div style="font-size:0.75rem; color:var(--text-secondary); display:flex; justify-content:space-between;">
+            <span>CALLSIGN / TG</span>
+            <span>RSSI / DUR</span>
+          </div>
+          <div id="dmr-ticker" style="display:flex; flex-direction:column; gap:0.4rem; height:180px; overflow-y:hidden; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
+            <!-- DMR Ticker items injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -263,6 +305,65 @@
 
     setInterval(updateClocks, 1000);
     updateClocks();
+
+    // DMR Ticker simulation
+    const dmrTicker = document.getElementById('dmr-ticker');
+    const mockCallsigns = ["K3LR", "W1AW", "N3LL", "KB3Y", "N4HH", "W3AA", "K1US", "KD8G", "W6PX", "K2XX"];
+    const mockTalkgroups = ["TG 3100 (USA)", "TG 91 (WW)", "TG 3124 (MD)", "TG 93 (NA)"];
+    
+    function addDmrFeed() {
+      if (!powerOn) return;
+      const call = mockCallsigns[Math.floor(Math.random() * mockCallsigns.length)];
+      const tg = mockTalkgroups[Math.floor(Math.random() * mockTalkgroups.length)];
+      const rssi = `-${(70 + Math.floor(Math.random() * 40))}dBm`;
+      const dur = `${(2 + Math.floor(Math.random() * 8))}s`;
+      
+      const row = document.createElement('div');
+      row.style.background = 'var(--bg-card)';
+      row.style.border = '1px solid var(--border-color)';
+      row.style.padding = '0.4rem';
+      row.style.borderRadius = '4px';
+      row.style.display = 'flex';
+      row.style.justifyContent = 'space-between';
+      row.style.opacity = '0';
+      row.style.transition = 'opacity 0.5s ease';
+      row.style.animation = 'glowGreen 1.5s ease-out';
+
+      row.innerHTML = `
+        <div style="display:flex; flex-direction:column;">
+          <span style="color:var(--accent-green); font-weight:bold;">${call}</span>
+          <span style="font-size:0.7rem; color:var(--text-secondary);">${tg}</span>
+        </div>
+        <div style="text-align:right; display:flex; flex-direction:column;">
+          <span style="color:var(--accent-cyan);">${rssi}</span>
+          <span style="font-size:0.7rem; color:var(--text-secondary);">${dur}</span>
+        </div>
+      `;
+
+      if (!document.getElementById('ticker-animations')) {
+        const style = document.createElement('style');
+        style.id = 'ticker-animations';
+        style.textContent = `
+          @keyframes glowGreen {
+            0% { box-shadow: 0 0 8px var(--accent-green); border-color: var(--accent-green); }
+            100% { box-shadow: none; border-color: var(--border-color); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      dmrTicker.insertBefore(row, dmrTicker.firstChild);
+      setTimeout(() => row.style.opacity = '1', 50);
+
+      while (dmrTicker.children.length > 4) {
+        dmrTicker.removeChild(dmrTicker.lastChild);
+      }
+    }
+
+    for (let i = 0; i < 4; i++) {
+      addDmrFeed();
+    }
+    setInterval(addDmrFeed, 6000);
   </script>
 </body>
 </html>
