@@ -546,6 +546,16 @@
               <button onclick="logoutAdmin()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">Exit Console</button>
             </div>
 
+            <!-- DATABASE ACTIONS -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color); padding:0.5rem; border-radius:4px; margin-bottom:0.25rem; background:var(--bg-card); width:100%;">
+              <span style="font-size:0.75rem; color:var(--text-secondary);">Database Actions</span>
+              <div style="display:flex; gap:0.4rem; align-items:center;">
+                <button onclick="exportBlogDB()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Export JSON</button>
+                <input type="file" id="import-blog-input" accept=".json" onchange="importBlogDB(event)" style="display:none;">
+                <button onclick="document.getElementById('import-blog-input').click()" style="background:transparent; border:1px solid var(--accent-amber); color:var(--accent-amber); border-radius:3px; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Import JSON</button>
+              </div>
+            </div>
+
             <!-- COMPOSE FORM -->
             <form id="blog-form" onsubmit="savePost(event)" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:0.75rem; display:flex; flex-direction:column; gap:0.5rem; width:100%;">
               <input type="hidden" id="edit-post-id">
@@ -1457,6 +1467,50 @@
       document.getElementById('post-tags').value = '';
       document.getElementById('post-body').value = '';
       document.getElementById('post-draft').checked = false;
+    }
+
+    // JSON Blog Database Backup/Restore Utility
+    function exportBlogDB() {
+      const posts = getBlogPosts();
+      const jsonStr = JSON.stringify(posts, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ac3gx_blog_db.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importBlogDB(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const posts = JSON.parse(e.target.result);
+          if (Array.isArray(posts)) {
+            const valid = posts.every(p => p.id && p.title && p.content && Array.isArray(p.tags));
+            if (valid) {
+              saveBlogPosts(posts);
+              renderAdminCatalog();
+              renderBlogList();
+              alert("Database imported successfully!");
+            } else {
+              alert("Error: JSON database does not match the required post schema.");
+            }
+          } else {
+            alert("Error: JSON file root must be an array of posts.");
+          }
+        } catch (err) {
+          alert("Error parsing JSON backup file: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
     }
   </script>
 </body>
