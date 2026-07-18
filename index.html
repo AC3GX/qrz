@@ -293,6 +293,13 @@
       background: var(--accent-cyan);
     }
 
+    /* Vertical Resizing for Inner Panels */
+    .udop-resize-v {
+      resize: vertical;
+      overflow-y: auto;
+      min-height: 100px;
+    }
+
     .card-header {
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 0.5rem;
@@ -489,8 +496,8 @@
           </div>
 
           <!-- LOG TABLE -->
-          <div
-            style="overflow-x:auto; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); max-height: 280px; overflow-y: auto;">
+          <div id="qso-log-table-wrapper" class="udop-resize-v"
+            style="overflow-x:auto; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); height: 280px;">
             <table
               style="width:100%; border-collapse:collapse; text-align:left; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
               <thead>
@@ -519,7 +526,7 @@
               <!-- Clickable tags dynamically added here -->
             </div>
           </div>
-          <div id="blog-posts-list" style="display:flex; flex-direction:column; gap:0.75rem; max-height:280px; overflow-y:auto; padding-right:0.25rem; width:100%;">
+          <div id="blog-posts-list" class="udop-resize-v" style="display:flex; flex-direction:column; gap:0.75rem; height:280px; padding-right:0.25rem; width:100%;">
             <!-- Blog post cards injected here -->
           </div>
           <!-- READER OVERLAY MODAL -->
@@ -529,7 +536,7 @@
               <button onclick="closeReader()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[CLOSE]</button>
             </div>
             <div id="reader-meta" style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-secondary); display:flex; gap:1rem;"></div>
-            <div id="reader-body" style="flex:1; overflow-y:auto; padding-right:0.25rem; margin:0.25rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; text-align:left;">
+            <div id="reader-body" class="udop-resize-v" style="padding-right:0.25rem; margin:0.25rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; text-align:left; height: 180px; flex:1;">
               <!-- Compiled Markdown text goes here -->
             </div>
             
@@ -592,7 +599,7 @@
               </div>
               <div>
                 <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Content (Markdown)</label>
-                <textarea id="post-body" required placeholder="Write your post here... Use ## for headings, **bold**, *italic*, `code`, and - for lists." style="width:100%; height:120px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'Outfit', sans-serif; resize:vertical;"></textarea>
+                <textarea id="post-body" class="udop-resize-v" required placeholder="Write your post here... Use ## for headings, **bold**, *italic*, `code`, and - for lists." style="width:100%; height:120px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'Outfit', sans-serif;"></textarea>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:0.5rem;">
                 <div style="display:flex; align-items:center; gap:0.35rem; font-size:0.8rem;">
@@ -1554,18 +1561,23 @@
       event.target.value = '';
     }
 
-    // Dimensions Observer for resizable panels
+    // Dimensions Observer for resizable panels and inner components
     const resizeObserver = new ResizeObserver(entries => {
       if (!powerOn) return;
       entries.forEach(entry => {
         const id = entry.target.id;
         if (!id) return;
-        const dims = { width: entry.target.style.width, height: entry.target.style.height };
-        localStorage.setItem(`ac3gx_panel_dim_${id}`, JSON.stringify(dims));
+        if (entry.target.classList.contains('udop-resize-v')) {
+          localStorage.setItem(`ac3gx_udop_h_${id}`, entry.target.style.height);
+        } else {
+          const dims = { width: entry.target.style.width, height: entry.target.style.height };
+          localStorage.setItem(`ac3gx_panel_dim_${id}`, JSON.stringify(dims));
+        }
       });
     });
 
     function initPanelResizing() {
+      // 1. Full Console Cards
       document.querySelectorAll('.console-card').forEach((card, index) => {
         if (!card.id) card.id = `panel-${index}`;
         const saved = localStorage.getItem(`ac3gx_panel_dim_${card.id}`);
@@ -1577,6 +1589,16 @@
           } catch (e) {}
         }
         resizeObserver.observe(card);
+      });
+
+      // 2. Inner Vertical Resizable Windows
+      document.querySelectorAll('.udop-resize-v').forEach((el, index) => {
+        if (!el.id) el.id = `udop-v-${index}`;
+        const savedHeight = localStorage.getItem(`ac3gx_udop_h_${el.id}`);
+        if (savedHeight) {
+          el.style.height = savedHeight;
+        }
+        resizeObserver.observe(el);
       });
     }
 
