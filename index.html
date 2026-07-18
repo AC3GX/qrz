@@ -534,7 +534,7 @@
           <div id="admin-auth-pane" style="display:flex; flex-direction:column; gap:0.75rem; align-items:center; justify-content:center; padding:2rem 0; width:100%;">
             <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Admin Access Required</span>
             <div style="display:flex; gap:0.5rem; width:100%; max-width:300px; justify-content:center;">
-              <input type="password" id="admin-passcode" placeholder="Enter Access Code" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; text-align:center; font-family:'JetBrains Mono', monospace; flex:1;">
+              <input type="password" id="admin-passcode" onkeydown="if(event.key === 'Enter') loginAdmin()" placeholder="Enter Access Code" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; text-align:center; font-family:'JetBrains Mono', monospace; flex:1;">
               <button onclick="loginAdmin()" style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.4rem 0.8rem; border-radius:4px; font-weight:bold; cursor:pointer; font-size:0.85rem; font-family:'Outfit', sans-serif;">ACCESS</button>
             </div>
             <span id="auth-error" style="color:#ff3b30; font-size:0.75rem; display:none;">Invalid Code. Retry.</span>
@@ -1097,6 +1097,13 @@
       const activeBtn = Array.from(document.querySelectorAll('.tab-btn'))
         .find(btn => btn.getAttribute('onclick').includes(tabId));
       if (activeBtn) activeBtn.classList.add('active');
+
+      if (tabId === 'admin' && !isAdmin) {
+        setTimeout(() => {
+          const input = document.getElementById('admin-passcode');
+          if (input) input.focus();
+        }, 50);
+      }
     }
 
     // Blog Database & Listing
@@ -1340,7 +1347,7 @@
     let isAdmin = false;
 
     function loginAdmin() {
-      const code = document.getElementById('admin-passcode').value;
+      const code = document.getElementById('admin-passcode').value.trim();
       const errorSpan = document.getElementById('auth-error');
       if (code === 'ac3gx123') {
         isAdmin = true;
