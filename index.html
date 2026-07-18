@@ -840,12 +840,20 @@
     ];
 
     function getQSOs() {
-      let qsos = localStorage.getItem('ac3gx_qsos');
-      if (!qsos) {
+      try {
+        let qsos = localStorage.getItem('ac3gx_qsos');
+        if (!qsos) {
+          localStorage.setItem('ac3gx_qsos', JSON.stringify(DEFAULT_QSOS));
+          return DEFAULT_QSOS;
+        }
+        const parsed = JSON.parse(qsos);
+        if (Array.isArray(parsed)) return parsed;
+        localStorage.setItem('ac3gx_qsos', JSON.stringify(DEFAULT_QSOS));
+        return DEFAULT_QSOS;
+      } catch (e) {
         localStorage.setItem('ac3gx_qsos', JSON.stringify(DEFAULT_QSOS));
         return DEFAULT_QSOS;
       }
-      return JSON.parse(qsos);
     }
 
     function saveQSOs(qsos) {
@@ -1131,12 +1139,20 @@
     let selectedTag = 'All';
 
     function getBlogPosts() {
-      let posts = localStorage.getItem('ac3gx_blog_db');
-      if (!posts) {
+      try {
+        let posts = localStorage.getItem('ac3gx_blog_db');
+        if (!posts) {
+          localStorage.setItem('ac3gx_blog_db', JSON.stringify(DEFAULT_BLOG_POSTS));
+          return DEFAULT_BLOG_POSTS;
+        }
+        const parsed = JSON.parse(posts);
+        if (Array.isArray(parsed)) return parsed;
+        localStorage.setItem('ac3gx_blog_db', JSON.stringify(DEFAULT_BLOG_POSTS));
+        return DEFAULT_BLOG_POSTS;
+      } catch (e) {
         localStorage.setItem('ac3gx_blog_db', JSON.stringify(DEFAULT_BLOG_POSTS));
         return DEFAULT_BLOG_POSTS;
       }
-      return JSON.parse(posts);
     }
 
     function saveBlogPosts(posts) {
@@ -1349,7 +1365,7 @@
     function loginAdmin() {
       const code = document.getElementById('admin-passcode').value.trim();
       const errorSpan = document.getElementById('auth-error');
-      if (code === 'admin') {
+      if (code.toLowerCase() === 'admin') {
         isAdmin = true;
         errorSpan.style.display = 'none';
         document.getElementById('admin-auth-pane').style.display = 'none';
