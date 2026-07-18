@@ -12,7 +12,7 @@ This document describes the design and specification for the integrated, tabbed 
 - **Integrated Tabs:** Replace the static QSO logbook header with a tab bar selector (`QSO Logbook`, `Station Blog`, `Admin Console`).
 - **Station Blog Panel:** Modern responsive blog listing with search and category filters.
 - **Post Reader Modal:** Smooth in-place blog reader displaying formatted text, tags, and persistent visitor comments.
-- **Admin Panel:** Passcode-protected interface (`ac3gx123`) to compose, draft, edit, and delete blog posts.
+- **Admin Panel:** Passcode-protected interface (`admin`) to compose, draft, edit, and delete blog posts.
 - **Backup Utility:** Database import and export of blog posts/comments using JSON files.
 - **Self-Contained Markdown Compiler:** Native JS parser to render headers, bold, italics, code segments, and lists.
 
@@ -116,7 +116,7 @@ function compileMarkdown(mdText) {
 ```
 
 ### Authentication Logic
-- Passcode matches `ac3gx123`.
+- Passcode matches `admin`.
 - Set session state `isAdmin = true` in JavaScript upon successful passcode validation, enabling editing and composition buttons.
 
 ---

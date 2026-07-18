@@ -549,7 +549,7 @@
   function loginAdmin() {
     const code = document.getElementById('admin-passcode').value;
     const errorSpan = document.getElementById('auth-error');
-    if (code === 'ac3gx123') {
+    if (code === 'admin') {
       isAdmin = true;
       errorSpan.style.display = 'none';
       document.getElementById('admin-auth-pane').style.display = 'none';
