@@ -501,6 +501,30 @@
           <div id="blog-posts-list" style="display:flex; flex-direction:column; gap:0.75rem; max-height:280px; overflow-y:auto; padding-right:0.25rem; width:100%;">
             <!-- Blog post cards injected here -->
           </div>
+          <!-- READER OVERLAY MODAL -->
+          <div id="blog-reader-overlay" style="display:none; position:absolute; inset:0; background:var(--bg-panel); border-radius:10px; z-index:100; flex-direction:column; padding:1.25rem; gap:0.75rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; width:100%;">
+              <h3 id="reader-title" style="color:var(--accent-green); margin:0;"></h3>
+              <button onclick="closeReader()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[CLOSE]</button>
+            </div>
+            <div id="reader-meta" style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-secondary); display:flex; gap:1rem;"></div>
+            <div id="reader-body" style="flex:1; overflow-y:auto; padding-right:0.25rem; margin:0.25rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; text-align:left;">
+              <!-- Compiled Markdown text goes here -->
+            </div>
+            
+            <!-- COMMENTS -->
+            <div style="display:flex; flex-direction:column; gap:0.5rem; max-height:160px; width:100%;">
+              <div style="font-weight:bold; font-size:0.8rem; text-transform:uppercase; color:var(--text-secondary); text-align:left;">Comments</div>
+              <div id="reader-comments" style="overflow-y:auto; display:flex; flex-direction:column; gap:0.35rem; flex:1; font-size:0.75rem; width:100%; max-height:80px;">
+                <!-- Comments injected here -->
+              </div>
+              <form id="comment-form" onsubmit="submitComment(event)" style="display:flex; gap:0.35rem; width:100%;">
+                <input type="text" id="comment-name" required placeholder="Name" style="width:80px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.3rem; color:white; font-size:0.75rem; outline:none;">
+                <input type="text" id="comment-text" required placeholder="Write a comment..." style="flex:1; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.3rem; color:white; font-size:0.75rem; outline:none;">
+                <button type="submit" style="background:var(--accent-cyan); color:var(--bg-primary); border:none; padding:0.3rem 0.6rem; border-radius:4px; font-weight:bold; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">SEND</button>
+              </form>
+            </div>
+          </div>
         </div>
 
         <!-- ADMIN TAB CONTENT -->
@@ -1129,6 +1153,122 @@
 
     function filterBlog() {
       renderBlogList();
+    }
+
+    // Markdown Compiler & Reader Overlay
+    let activePostId = null;
+
+    function compileMarkdown(mdText) {
+      let html = mdText
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Headers
+      html = html.replace(/^### (.*?)$/gm, '<h4 style="color:var(--accent-cyan); margin: 0.6rem 0 0.3rem 0; font-size:1rem;">$1</h4>');
+      html = html.replace(/^## (.*?)$/gm, '<h3 style="color:var(--accent-green); margin: 0.8rem 0 0.4rem 0; font-size:1.15rem;">$1</h3>');
+
+      // Bold (**text**)
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Italics (*text*)
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+      // Code Blocks (```code```)
+      html = html.replace(/```([\s\S]*?)```/g, '<pre style="background:var(--bg-primary); padding:0.4rem; border-radius:4px; border:1px solid var(--border-color); font-family:\'JetBrains Mono\', monospace; margin: 0.4rem 0; overflow-x:auto; font-size:0.8rem; color:var(--text-primary);"><code>$1</code></pre>');
+
+      // Inline Code (`code`)
+      html = html.replace(/`(.*?)`/g, '<code style="background:var(--bg-primary); padding:0.1rem 0.25rem; border-radius:3px; font-family:\'JetBrains Mono\', monospace; color:var(--accent-amber);">$1</code>');
+
+      // Bullet Lists
+      html = html.replace(/^\- (.*?)$/gm, '<li style="margin-left: 1.2rem; margin-bottom: 0.2rem; list-style-type:square;">$1</li>');
+
+      // Newlines to Paragraphs
+      html = html.replace(/\n\n/g, '</p><p style="margin-bottom:0.6rem;">');
+
+      return `<p style="margin-bottom:0.6rem; line-height:1.5;">` + html + `</p>`;
+    }
+
+    function openReader(postId) {
+      const posts = getBlogPosts();
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      activePostId = postId;
+      document.getElementById('reader-title').textContent = post.title;
+      
+      const date = new Date(post.timestamp);
+      const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')} UTC`;
+      document.getElementById('reader-meta').innerHTML = `
+        <span>Published: ${dateStr}</span>
+        <span>Tags: ${post.tags.map(t => `#${t}`).join(', ')}</span>
+      `;
+
+      document.getElementById('reader-body').innerHTML = compileMarkdown(post.content);
+      renderComments(post.comments);
+
+      const overlay = document.getElementById('blog-reader-overlay');
+      overlay.style.display = 'flex';
+    }
+
+    function closeReader() {
+      activePostId = null;
+      document.getElementById('blog-reader-overlay').style.display = 'none';
+    }
+
+    function renderComments(comments) {
+      const list = document.getElementById('reader-comments');
+      list.innerHTML = '';
+      
+      if (!comments || comments.length === 0) {
+        list.innerHTML = `<span style="color:var(--text-secondary); font-style:italic;">No comments yet. Be the first!</span>`;
+        return;
+      }
+
+      comments.forEach(c => {
+        const d = new Date(c.timestamp);
+        const timeStr = `${d.getUTCHours()}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+        const div = document.createElement('div');
+        div.style.cssText = `
+          background: var(--bg-primary);
+          border-radius: 4px;
+          padding: 0.3rem 0.5rem;
+          border-left: 2px solid var(--accent-cyan);
+          margin-bottom: 0.25rem;
+        `;
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:0.15rem; color:var(--text-secondary); font-weight:bold; font-size:0.7rem;">
+            <span style="color:var(--accent-cyan);">${c.name}</span>
+            <span>${timeStr} UTC</span>
+          </div>
+          <div style="color:var(--text-primary); text-align:left;">${c.comment}</div>
+        `;
+        list.appendChild(div);
+      });
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function submitComment(e) {
+      e.preventDefault();
+      if (!activePostId || !powerOn) return;
+      const nameInput = document.getElementById('comment-name');
+      const commentInput = document.getElementById('comment-text');
+
+      const posts = getBlogPosts();
+      const index = posts.findIndex(p => p.id === activePostId);
+      if (index === -1) return;
+
+      if (!posts[index].comments) posts[index].comments = [];
+      
+      posts[index].comments.push({
+        name: nameInput.value.trim(),
+        comment: commentInput.value.trim(),
+        timestamp: Date.now()
+      });
+
+      saveBlogPosts(posts);
+      renderComments(posts[index].comments);
+      commentInput.value = '';
     }
   </script>
 </body>
