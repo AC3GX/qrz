@@ -64,6 +64,48 @@
       gap: 1rem;
     }
 
+    /* Blog Card Panel Styles */
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      text-align: left;
+    }
+    .blog-card:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-glow-cyan);
+      transform: translateY(-1px);
+    }
+    .blog-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+    .blog-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent-green);
+      margin-bottom: 0.4rem;
+    }
+    .blog-tag {
+      display: inline-block;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--accent-amber);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      margin-right: 0.3rem;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -449,7 +491,16 @@
         </div>
 
         <!-- BLOG TAB CONTENT -->
-        <div id="blog-tab-content" class="tab-content">
+        <div id="blog-tab-content" class="tab-content" style="position:relative;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap; width:100%;">
+            <input type="text" id="blog-search" oninput="filterBlog()" placeholder="Search posts..." style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; width:100%; max-width:200px; color:white; font-size:0.8rem; outline:none;">
+            <div id="blog-tag-filters" style="display:flex; gap:0.4rem; overflow-x:auto; max-width: 100%;">
+              <!-- Clickable tags dynamically added here -->
+            </div>
+          </div>
+          <div id="blog-posts-list" style="display:flex; flex-direction:column; gap:0.75rem; max-height:280px; overflow-y:auto; padding-right:0.25rem; width:100%;">
+            <!-- Blog post cards injected here -->
+          </div>
         </div>
 
         <!-- ADMIN TAB CONTENT -->
@@ -806,6 +857,7 @@
 
     // Render on initial load
     renderQSOs();
+    renderBlogList();
 
     // CW Morse Code keyer logic
     let audioCtx = null;
@@ -956,6 +1008,127 @@
       const activeBtn = Array.from(document.querySelectorAll('.tab-btn'))
         .find(btn => btn.getAttribute('onclick').includes(tabId));
       if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    // Blog Database & Listing
+    const DEFAULT_BLOG_POSTS = [
+      {
+        id: "post-1",
+        title: "My Yaesu FT-891 Mobile/Portable Shack Setup",
+        content: "### Portable Station Setup\nSetting up portable HF operations in local state parks is one of the most rewarding parts of this hobby. Today, I'm documenting my compact transceiver layout.\n\n### The Transceiver\nThe core rig is a `Yaesu FT-891`. It is ultra-compact, handles up to 100W, and has an incredibly robust DSP system to handle band noise.\n\n### The Antenna\nI'm using an **End-Fed Horizontal Wire Antenna** configured as a sloper. It takes less than 10 minutes to fling a guide line over a tall tree branch and tie off the feedpoint.",
+        tags: ["Hardware", "HF", "Portable"],
+        timestamp: Date.now() - 86400000 * 2,
+        status: "published",
+        comments: []
+      },
+      {
+        id: "post-2",
+        title: "Digital Modes Overview: FT8 on 20m",
+        content: "### Why Digital Modes?\nDigital modes like `FT8` and `FT4` allow amateur radio operators to make contacts even when solar conditions are poor or antenna setups are highly constrained.\n\n### Station Config\n- **Rig:** Yaesu FT-891\n- **Software:** WSJT-X connected via USB soundcard interface\n- **Power:** 25 Watts is typically more than enough for worldwide DX propagation.\n\nCheck out my recent log entries in the `QSO Logbook` tab to see some of my successful digital mode contacts!",
+        tags: ["Digital", "FT8", "Software"],
+        timestamp: Date.now() - 86400000 * 5,
+        status: "published",
+        comments: []
+      }
+    ];
+
+    let selectedTag = 'All';
+
+    function getBlogPosts() {
+      let posts = localStorage.getItem('ac3gx_blog_db');
+      if (!posts) {
+        localStorage.setItem('ac3gx_blog_db', JSON.stringify(DEFAULT_BLOG_POSTS));
+        return DEFAULT_BLOG_POSTS;
+      }
+      return JSON.parse(posts);
+    }
+
+    function saveBlogPosts(posts) {
+      localStorage.setItem('ac3gx_blog_db', JSON.stringify(posts));
+    }
+
+    function renderBlogList() {
+      const posts = getBlogPosts();
+      const list = document.getElementById('blog-posts-list');
+      if (!list) return;
+      const searchVal = document.getElementById('blog-search').value.toLowerCase();
+      list.innerHTML = '';
+
+      // Collect all tags dynamically
+      const tagsSet = new Set(['All']);
+      posts.forEach(p => {
+        if (p.status === 'published') {
+          p.tags.forEach(t => tagsSet.add(t));
+        }
+      });
+      renderTagFilters(Array.from(tagsSet));
+
+      const published = posts.filter(p => p.status === 'published');
+      const sorted = published.sort((a, b) => b.timestamp - a.timestamp);
+
+      sorted.forEach(p => {
+        const titleMatch = p.title.toLowerCase().includes(searchVal);
+        const contentMatch = p.content.toLowerCase().includes(searchVal);
+        const tagMatch = selectedTag === 'All' || p.tags.includes(selectedTag);
+
+        if ((titleMatch || contentMatch) && tagMatch) {
+          // Read time calculation (avg 200 words per minute)
+          const wordCount = p.content.split(/\s+/).length;
+          const readTime = Math.max(1, Math.ceil(wordCount / 200));
+
+          const date = new Date(p.timestamp);
+          const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
+
+          const card = document.createElement('div');
+          card.className = 'blog-card';
+          card.onclick = () => openReader(p.id);
+          card.innerHTML = `
+            <div class="blog-meta">
+              <span>${dateStr} UTC</span>
+              <span>${readTime} min read</span>
+            </div>
+            <div class="blog-title">${p.title}</div>
+            <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem; line-height:1.4;">
+              ${p.content.substring(0, 100)}...
+            </div>
+            <div>
+              ${p.tags.map(t => `<span class="blog-tag">#${t}</span>`).join('')}
+            </div>
+          `;
+          list.appendChild(card);
+        }
+      });
+    }
+
+    function renderTagFilters(tags) {
+      const container = document.getElementById('blog-tag-filters');
+      if (!container) return;
+      container.innerHTML = '';
+      tags.forEach(t => {
+        const btn = document.createElement('button');
+        btn.style.cssText = `
+          background: ${selectedTag === t ? 'var(--accent-cyan)' : 'var(--bg-card)'};
+          color: ${selectedTag === t ? 'var(--bg-primary)' : 'var(--text-secondary)'};
+          border: 1px solid var(--border-color);
+          border-radius: 3px;
+          padding: 0.15rem 0.4rem;
+          font-size: 0.7rem;
+          font-family: 'JetBrains Mono', monospace;
+          cursor: pointer;
+          font-weight: bold;
+          transition: all 0.2s ease;
+        `;
+        btn.textContent = t === 'All' ? '[ALL]' : `#${t}`;
+        btn.onclick = () => {
+          selectedTag = t;
+          renderBlogList();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function filterBlog() {
+      renderBlogList();
     }
   </script>
 </body>
