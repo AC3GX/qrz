@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AC3GX // Radio Shack Console</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg-primary: #0b0c10;
@@ -22,7 +25,13 @@
       --accent-glow-cyan: rgba(0, 229, 255, 0.2);
       --accent-glow-amber: rgba(255, 179, 0, 0.2);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background-color: var(--bg-primary);
       color: var(--text-primary);
@@ -32,6 +41,7 @@
       flex-direction: column;
       overflow-x: hidden;
     }
+
     header {
       background: var(--bg-panel);
       border-bottom: 2px solid var(--border-color);
@@ -42,11 +52,13 @@
       align-items: center;
       gap: 1rem;
     }
+
     .logo-section {
       display: flex;
       align-items: center;
       gap: 0.75rem;
     }
+
     .logo-call {
       font-size: 1.8rem;
       font-weight: 700;
@@ -54,6 +66,7 @@
       font-family: 'JetBrains Mono', monospace;
       color: var(--text-primary);
     }
+
     .logo-led {
       width: 10px;
       height: 10px;
@@ -62,15 +75,25 @@
       box-shadow: 0 0 10px var(--accent-green);
       animation: pulse 2s infinite alternate;
     }
+
     @keyframes pulse {
-      0% { opacity: 0.4; box-shadow: 0 0 2px var(--accent-green); }
-      100% { opacity: 1; box-shadow: 0 0 12px var(--accent-green); }
+      0% {
+        opacity: 0.4;
+        box-shadow: 0 0 2px var(--accent-green);
+      }
+
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 12px var(--accent-green);
+      }
     }
+
     .clocks-section {
       display: flex;
       gap: 1.5rem;
       font-family: 'JetBrains Mono', monospace;
     }
+
     .clock-item {
       background: var(--bg-card);
       padding: 0.5rem 0.75rem;
@@ -79,27 +102,32 @@
       min-width: 130px;
       text-align: center;
     }
+
     .clock-label {
       font-size: 0.7rem;
       text-transform: uppercase;
       color: var(--text-secondary);
       display: block;
     }
+
     .clock-time {
       font-size: 1.1rem;
       font-weight: bold;
       color: var(--accent-cyan);
     }
+
     .status-section {
       display: flex;
       align-items: center;
       gap: 1rem;
       font-family: 'JetBrains Mono', monospace;
     }
+
     .freq-display {
       color: var(--accent-amber);
       font-weight: bold;
     }
+
     .power-btn {
       background: transparent;
       border: 1px solid var(--accent-green);
@@ -112,20 +140,24 @@
       font-weight: 600;
       transition: all 0.2s ease;
     }
+
     .power-btn:hover {
       background: var(--accent-green);
       color: var(--bg-primary);
       box-shadow: 0 0 8px var(--accent-green);
     }
+
     .power-btn.off {
       border-color: var(--text-secondary);
       color: var(--text-secondary);
     }
+
     .power-btn.off:hover {
       background: var(--text-secondary);
       color: var(--bg-primary);
       box-shadow: none;
     }
+
     .console-grid {
       flex: 1;
       display: grid;
@@ -136,16 +168,19 @@
       margin: 0 auto;
       width: 100%;
     }
+
     @media (max-width: 1024px) {
       .console-grid {
         grid-template-columns: 1fr 1fr;
       }
     }
+
     @media (max-width: 768px) {
       .console-grid {
         grid-template-columns: 1fr;
       }
     }
+
     .console-card {
       background: var(--bg-panel);
       border: 2px solid var(--border-color);
@@ -156,6 +191,7 @@
       gap: 1rem;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
+
     .card-header {
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 0.5rem;
@@ -167,6 +203,7 @@
       justify-content: space-between;
       align-items: center;
     }
+
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -176,18 +213,29 @@
       background: var(--bg-panel);
       margin-top: auto;
     }
+
     @media (max-width: 768px) {
       header {
         flex-direction: column;
         align-items: stretch;
         text-align: center;
       }
-      .logo-section { justify-content: center; }
-      .clocks-section { justify-content: center; }
-      .status-section { justify-content: center; }
+
+      .logo-section {
+        justify-content: center;
+      }
+
+      .clocks-section {
+        justify-content: center;
+      }
+
+      .status-section {
+        justify-content: center;
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <div class="logo-section">
@@ -220,19 +268,24 @@
           <span style="font-size:0.7rem; color:var(--accent-green);">● ACTIVE</span>
         </div>
         <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.9rem;">
-          <div style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
-            <strong style="font-size:1.1rem; color:var(--accent-green); font-family:'JetBrains Mono', monospace;">AC3GX</strong>
+          <div
+            style="background:var(--bg-card); padding:0.75rem; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+            <strong
+              style="font-size:1.1rem; color:var(--accent-green); font-family:'JetBrains Mono', monospace;">AC3GX</strong>
             <div style="color:var(--text-secondary); font-size:0.75rem; margin-top:0.2rem;">Amateur Radio Station</div>
           </div>
-          <div><strong>Operator:</strong> Alex</div>
-          <div><strong>Location:</strong> Maryland, USA</div>
-          <div><strong>Grid Square:</strong> FM19ff</div>
+          <div><strong>Operator:</strong> Mark</div>
+          <div><strong>Location:</strong> Pennsylvania, USA</div>
+          <div><strong>Grid Square:</strong> FN20kb</div>
           <div><strong>License Class:</strong> Extra</div>
           <div style="border-top:1px solid var(--border-color); margin-top:0.5rem; padding-top:0.5rem;">
-            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.25rem;">Rig / Hardware</div>
-            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">ICOM IC-7300 (HF)</div>
-            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">LDG IT-100 Tuner</div>
-            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">80-10m End Fed Wire</div>
+            <div
+              style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.25rem;">
+              Rig / Hardware</div>
+            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">ICOM
+              Yeasu FT-891 (HF)</div>
+            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">80-10m
+              End Fed Wire</div>
           </div>
         </div>
       </div>
@@ -248,7 +301,8 @@
             <span>CALLSIGN / TG</span>
             <span>RSSI / DUR</span>
           </div>
-          <div id="dmr-ticker" style="display:flex; flex-direction:column; gap:0.4rem; height:180px; overflow-y:hidden; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
+          <div id="dmr-ticker"
+            style="display:flex; flex-direction:column; gap:0.4rem; height:180px; overflow-y:hidden; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
             <!-- DMR Ticker items injected here -->
           </div>
         </div>
@@ -261,18 +315,25 @@
       <div class="console-card">
         <div class="card-header">
           <span>QSO Logbook (Digital)</span>
-          <button onclick="exportADIF()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Export ADIF</button>
+          <button onclick="exportADIF()"
+            style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Export
+            ADIF</button>
         </div>
 
         <!-- QSO ADD FORM -->
-        <form id="qso-form" onsubmit="addQSO(event)" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:0.75rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:0.5rem; align-items:flex-end;">
+        <form id="qso-form" onsubmit="addQSO(event)"
+          style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:0.75rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:0.5rem; align-items:flex-end;">
           <div>
-            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">Callsign</label>
-            <input type="text" id="qso-call" required placeholder="e.g. W1AW" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'JetBrains Mono', monospace; text-transform:uppercase; font-size:0.8rem; outline:none;">
+            <label
+              style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">Callsign</label>
+            <input type="text" id="qso-call" required placeholder="e.g. W1AW"
+              style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'JetBrains Mono', monospace; text-transform:uppercase; font-size:0.8rem; outline:none;">
           </div>
           <div>
-            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">Band</label>
-            <select id="qso-band" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.8rem; outline:none;">
+            <label
+              style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">Band</label>
+            <select id="qso-band"
+              style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.8rem; outline:none;">
               <option value="20m">20m</option>
               <option value="40m">40m</option>
               <option value="80m">80m</option>
@@ -281,35 +342,49 @@
             </select>
           </div>
           <div>
-            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">Mode</label>
-            <select id="qso-mode" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.8rem; outline:none;">
+            <label
+              style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">Mode</label>
+            <select id="qso-mode"
+              style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.8rem; outline:none;">
               <option value="FT8">FT8</option>
               <option value="FT4">FT4</option>
               <option value="PSK31">PSK31</option>
             </select>
           </div>
           <div>
-            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">RST (Sent)</label>
-            <input type="text" id="qso-rst-sent" placeholder="-12" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'JetBrains Mono', monospace; font-size:0.8rem; outline:none;">
+            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">RST
+              (Sent)</label>
+            <input type="text" id="qso-rst-sent" placeholder="-12"
+              style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'JetBrains Mono', monospace; font-size:0.8rem; outline:none;">
           </div>
           <div>
-            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">RST (Rcvd)</label>
-            <input type="text" id="qso-rst-rcvd" placeholder="-08" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'JetBrains Mono', monospace; font-size:0.8rem; outline:none;">
+            <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem;">RST
+              (Rcvd)</label>
+            <input type="text" id="qso-rst-rcvd" placeholder="-08"
+              style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'JetBrains Mono', monospace; font-size:0.8rem; outline:none;">
           </div>
-          <button type="submit" style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.45rem; border-radius:4px; font-weight:bold; cursor:pointer; height:32px; font-size:0.8rem;">LOG QSO</button>
+          <button type="submit"
+            style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.45rem; border-radius:4px; font-weight:bold; cursor:pointer; height:32px; font-size:0.8rem;">LOG
+            QSO</button>
         </form>
 
         <!-- SEARCH FILTER -->
         <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; margin-top:0.25rem;">
-          <input type="text" id="log-search" oninput="filterLogs()" placeholder="Search calls..." style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; width:100%; max-width:200px; color:white; font-size:0.8rem; outline:none;">
-          <span style="font-size:0.75rem; color:var(--text-secondary);"><span id="qso-count" style="color:var(--accent-green); font-weight:bold; font-family:'JetBrains Mono', monospace;">0</span> Contacts Logged</span>
+          <input type="text" id="log-search" oninput="filterLogs()" placeholder="Search calls..."
+            style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; width:100%; max-width:200px; color:white; font-size:0.8rem; outline:none;">
+          <span style="font-size:0.75rem; color:var(--text-secondary);"><span id="qso-count"
+              style="color:var(--accent-green); font-weight:bold; font-family:'JetBrains Mono', monospace;">0</span>
+            Contacts Logged</span>
         </div>
 
         <!-- LOG TABLE -->
-        <div style="overflow-x:auto; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); max-height: 280px; overflow-y: auto;">
-          <table style="width:100%; border-collapse:collapse; text-align:left; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
+        <div
+          style="overflow-x:auto; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-card); max-height: 280px; overflow-y: auto;">
+          <table
+            style="width:100%; border-collapse:collapse; text-align:left; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
             <thead>
-              <tr style="border-bottom:1px solid var(--border-color); background:var(--bg-panel); color:var(--text-secondary); position: sticky; top: 0; z-index: 10;">
+              <tr
+                style="border-bottom:1px solid var(--border-color); background:var(--bg-panel); color:var(--text-secondary); position: sticky; top: 0; z-index: 10;">
                 <th style="padding:0.6rem 0.8rem;">Date/Time</th>
                 <th style="padding:0.6rem 0.8rem;">Callsign</th>
                 <th style="padding:0.6rem 0.8rem;">Band</th>
@@ -334,48 +409,64 @@
           <span>Solar Conditions</span>
           <span id="solar-update" style="font-size:0.65rem; color:var(--text-secondary);">LIVE</span>
         </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
-          <div style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Solar Flux</span>
+        <div
+          style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Solar
+              Flux</span>
             <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="sfi-val">142</span>
           </div>
-          <div style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Sunspots</span>
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span
+              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Sunspots</span>
             <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="ssn-val">95</span>
           </div>
-          <div style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">A-Index</span>
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span
+              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">A-Index</span>
             <span style="font-size:1.1rem; color:var(--accent-green); font-weight:bold;" id="a-val">6</span>
           </div>
-          <div style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">K-Index</span>
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span
+              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">K-Index</span>
             <span style="font-size:1.1rem; color:var(--accent-green); font-weight:bold;" id="k-val">2</span>
           </div>
         </div>
-        
+
         <div style="border-top:1px solid var(--border-color); padding-top:0.75rem; margin-top:0.25rem;">
-          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:600;">HF Band Conditions</div>
-          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-size:0.75rem; font-family:'JetBrains Mono', monospace;">
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+          <div
+            style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:600;">
+            HF Band Conditions</div>
+          <div
+            style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-size:0.75rem; font-family:'JetBrains Mono', monospace;">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
               <span>80m-40m</span>
               <span style="color:var(--accent-green); font-weight:bold;">GOOD</span>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
               <span>30m-20m</span>
               <span style="color:var(--accent-green); font-weight:bold;">GOOD</span>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
               <span>17m-15m</span>
               <span style="color:var(--accent-amber); font-weight:bold;">FAIR</span>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
               <span>12m-10m</span>
               <span style="color:#ff3b30; font-weight:bold;">POOR</span>
             </div>
           </div>
         </div>
       </div>
-      
+
       <!-- MORSE CODE KEYER CARD -->
       <div class="console-card">
         <div class="card-header">
@@ -383,20 +474,26 @@
           <span style="font-size:0.7rem; color:var(--accent-amber);">700 Hz sidetone</span>
         </div>
         <div style="display:flex; flex-direction:column; gap:0.75rem;">
-          <div style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; gap:0.25rem;">
+          <div
+            style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; gap:0.25rem;">
             <span style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase;">Decoded Text</span>
-            <div id="morse-output" style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-green); word-break:break-all; min-height:24px;"></div>
+            <div id="morse-output"
+              style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-green); word-break:break-all; min-height:24px;">
+            </div>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
             <div>
               <label style="color:var(--text-secondary); font-size:0.7rem;">WPM Speed</label>
-              <input type="range" id="wpm-slider" min="10" max="30" value="18" style="vertical-align:middle; width:80px; margin-left:0.4rem;">
+              <input type="range" id="wpm-slider" min="10" max="30" value="18"
+                style="vertical-align:middle; width:80px; margin-left:0.4rem;">
               <span id="wpm-label" style="font-family:'JetBrains Mono', monospace; margin-left:0.25rem;">18</span>
             </div>
-            <button onclick="clearMorseText()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.7rem; cursor:pointer; font-family:'Outfit', sans-serif;">Clear</button>
+            <button onclick="clearMorseText()"
+              style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.7rem; cursor:pointer; font-family:'Outfit', sans-serif;">Clear</button>
           </div>
           <!-- KEY BUTTON -->
-          <button id="morse-key-btn" style="background:var(--bg-card); border:2px solid var(--border-color); height:80px; border-radius:8px; cursor:pointer; color:var(--text-secondary); font-weight:bold; font-size:0.9rem; transition:all 0.1s ease; user-select:none; font-family:'Outfit', sans-serif; outline:none;">
+          <button id="morse-key-btn"
+            style="background:var(--bg-card); border:2px solid var(--border-color); height:80px; border-radius:8px; cursor:pointer; color:var(--text-secondary); font-weight:bold; font-size:0.9rem; transition:all 0.1s ease; user-select:none; font-family:'Outfit', sans-serif; outline:none;">
             PRESS SPACEBAR / HOLD CLICK
           </button>
         </div>
@@ -414,7 +511,7 @@
     function updateClocks() {
       const now = new Date();
       const pad = (n) => String(n).padStart(2, '0');
-      
+
       // Local clock
       const lH = pad(now.getHours());
       const lM = pad(now.getMinutes());
@@ -433,7 +530,7 @@
       const btn = document.getElementById('power-btn');
       const led = document.getElementById('power-led');
       const grid = document.getElementById('console-grid');
-      
+
       if (powerOn) {
         btn.textContent = "PWR ON";
         btn.classList.remove('off');
@@ -458,14 +555,14 @@
     const dmrTicker = document.getElementById('dmr-ticker');
     const mockCallsigns = ["K3LR", "W1AW", "N3LL", "KB3Y", "N4HH", "W3AA", "K1US", "KD8G", "W6PX", "K2XX"];
     const mockTalkgroups = ["TG 3100 (USA)", "TG 91 (WW)", "TG 3124 (MD)", "TG 93 (NA)"];
-    
+
     function addDmrFeed() {
       if (!powerOn) return;
       const call = mockCallsigns[Math.floor(Math.random() * mockCallsigns.length)];
       const tg = mockTalkgroups[Math.floor(Math.random() * mockTalkgroups.length)];
       const rssi = `-${(70 + Math.floor(Math.random() * 40))}dBm`;
       const dur = `${(2 + Math.floor(Math.random() * 8))}s`;
-      
+
       const row = document.createElement('div');
       row.style.background = 'var(--bg-card)';
       row.style.border = '1px solid var(--border-color)';
@@ -520,20 +617,20 @@
       const currentSSN = 85 + Math.floor(Math.random() * 20);
       const currentA = 4 + Math.floor(Math.random() * 5);
       const currentK = 1 + Math.floor(Math.random() * 3);
-      
+
       document.getElementById('sfi-val').textContent = currentSFI;
       document.getElementById('ssn-val').textContent = currentSSN;
       document.getElementById('a-val').textContent = currentA;
       document.getElementById('k-val').textContent = currentK;
-      
+
       const kColor = currentK > 3 ? '#ff3b30' : (currentK > 2 ? 'var(--accent-amber)' : 'var(--accent-green)');
       document.getElementById('k-val').style.color = kColor;
-      
+
       const updateTime = new Date();
       const pad = (n) => String(n).padStart(2, '0');
       document.getElementById('solar-update').textContent = `LST UPD: ${pad(updateTime.getUTCHours())}:${pad(updateTime.getUTCMinutes())}:${pad(updateTime.getUTCSeconds())} UTC`;
     }
-    
+
     setInterval(updateSolarIndices, 30000);
     updateSolarIndices();
 
@@ -563,15 +660,15 @@
       const tbody = document.getElementById('qso-table-body');
       const term = filterTerm.toUpperCase();
       tbody.innerHTML = '';
-      
+
       const sorted = [...qsos].sort((a, b) => b.timestamp - a.timestamp);
 
       sorted.forEach(q => {
         if (term && !q.callsign.toUpperCase().includes(term)) return;
-        
+
         const date = new Date(q.timestamp);
-        const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}`;
-        
+        const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}`;
+
         const tr = document.createElement('tr');
         tr.style.borderBottom = '1px solid var(--border-color)';
         tr.innerHTML = `
@@ -596,7 +693,7 @@
       const modeInput = document.getElementById('qso-mode');
       const rstSentInput = document.getElementById('qso-rst-sent');
       const rstRcvdInput = document.getElementById('qso-rst-rcvd');
-      
+
       const newQSO = {
         timestamp: Date.now(),
         callsign: callInput.value.trim().toUpperCase(),
@@ -610,7 +707,7 @@
       qsos.push(newQSO);
       saveQSOs(qsos);
       renderQSOs(document.getElementById('log-search').value);
-      
+
       // Reset Form
       callInput.value = '';
       rstSentInput.value = '';
@@ -624,18 +721,18 @@
     function exportADIF() {
       const qsos = getQSOs();
       let adif = `ADIF Export from AC3GX Station Console\n<ADIF_VER:5>3.1.4\n<PROGRAMID:13>AC3GX_CONSOLE\n<EOH>\n`;
-      
+
       qsos.forEach(q => {
         const d = new Date(q.timestamp);
-        const dateStr = `${d.getUTCFullYear()}${String(d.getUTCMonth()+1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
+        const dateStr = `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
         const timeStr = `${String(d.getUTCHours()).padStart(2, '0')}${String(d.getUTCMinutes()).padStart(2, '0')}00`;
-        
+
         const call = q.callsign.toUpperCase();
         const band = q.band.toUpperCase();
         const mode = q.mode.toUpperCase();
         const sent = q.rstSent || '59';
         const rcvd = q.rstRcvd || '59';
-        
+
         adif += `<CALL:${call.length}>${call} <QSO_DATE:8>${dateStr} <TIME_ON:6>${timeStr} <BAND:${band.length}>${band} <MODE:${mode.length}>${mode} <RST_SENT:${sent.length}>${sent} <RST_RCVD:${rcvd.length}>${rcvd} <EOR>\n`;
       });
 
@@ -690,19 +787,19 @@
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
-      
+
       oscillator = audioCtx.createOscillator();
       gainNode = audioCtx.createGain();
-      
+
       oscillator.type = 'sine';
       oscillator.frequency.value = 700;
-      
+
       gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.005);
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);
-      
+
       oscillator.start();
     }
 
@@ -719,11 +816,11 @@
       keyIsDown = true;
       startTone();
       keyDownTime = performance.now();
-      
+
       const keyBtn = document.getElementById('morse-key-btn');
       keyBtn.style.borderColor = 'var(--accent-amber)';
       keyBtn.style.background = 'var(--accent-glow-amber)';
-      
+
       if (morseTimer) clearTimeout(morseTimer);
     }
 
@@ -732,21 +829,21 @@
       keyIsDown = false;
       stopTone();
       keyUpTime = performance.now();
-      
+
       const keyBtn = document.getElementById('morse-key-btn');
       keyBtn.style.borderColor = 'var(--border-color)';
       keyBtn.style.background = 'var(--bg-card)';
-      
+
       const duration = keyUpTime - keyDownTime;
       const wpm = parseInt(wpmSlider.value);
       const dotLength = 1200 / wpm;
-      
+
       if (duration < dotLength * 1.5) {
         currentLetterSignal += '.';
       } else {
         currentLetterSignal += '-';
       }
-      
+
       morseTimer = setTimeout(() => {
         decodeCharacter();
       }, dotLength * 3.5);
@@ -757,7 +854,7 @@
       const char = MORSE_CODE[currentLetterSignal] || '?';
       document.getElementById('morse-output').textContent += char;
       currentLetterSignal = '';
-      
+
       const wpm = parseInt(wpmSlider.value);
       const dotLength = 1200 / wpm;
       morseTimer = setTimeout(() => {
@@ -792,4 +889,5 @@
     });
   </script>
 </body>
+
 </html>
