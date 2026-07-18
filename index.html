@@ -330,6 +330,8 @@
         flex-direction: column;
         align-items: stretch;
         text-align: center;
+        padding: 0.75rem !important;
+        gap: 0.75rem !important;
       }
 
       .logo-section {
@@ -338,10 +340,74 @@
 
       .clocks-section {
         justify-content: center;
+        gap: 0.5rem !important;
+        width: 100%;
+      }
+
+      .clock-item {
+        min-width: 110px !important;
+        padding: 0.35rem 0.5rem !important;
+      }
+
+      .clock-time {
+        font-size: 0.95rem !important;
       }
 
       .status-section {
         justify-content: center;
+      }
+
+      .console-grid {
+        grid-template-columns: 1fr !important;
+        padding: 0.5rem !important;
+        gap: 0.75rem !important;
+      }
+
+      .console-card {
+        width: 100% !important;
+        height: auto !important;
+        min-height: unset !important;
+        resize: none !important;
+        padding: 0.85rem !important;
+      }
+
+      .udop-resize-v {
+        height: auto !important;
+        resize: none !important;
+      }
+
+      .tab-content.active {
+        gap: 0.75rem !important;
+      }
+
+      /* Compact table styling for small mobile screens */
+      table {
+        font-size: 0.7rem !important;
+      }
+
+      th, td {
+        padding: 0.4rem 0.5rem !important;
+      }
+
+      /* Stack blog metadata and compress cards */
+      .blog-card {
+        padding: 0.75rem !important;
+      }
+
+      .blog-meta {
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      /* Fixed fullscreen overlay modal reading layout on mobile devices */
+      #blog-reader-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        border-radius: 0 !important;
+        z-index: 10000 !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        box-shadow: none !important;
       }
     }
   </style>
