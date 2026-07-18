@@ -952,9 +952,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Render on initial load
-    renderQSOs();
-    renderBlogList();
 
     // CW Morse Code keyer logic
     let audioCtx = null;
@@ -1409,8 +1406,8 @@
         `;
         row.innerHTML = `
           <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding-right:1rem;">
-            <span style="color:${p.status === 'draft' ? 'var(--accent-amber)' : 'var(--accent-green)'};">[${p.status.toUpperCase()}]</span>
-            <span style="color:white; font-weight:bold;">${p.title}</span>
+            <span style="color:${(p.status || 'published') === 'draft' ? 'var(--accent-amber)' : 'var(--accent-green)'};">[${(p.status || 'published').toUpperCase()}]</span>
+            <span style="color:white; font-weight:bold;">${p.title || 'Untitled'}</span>
           </div>
           <div style="display:flex; gap:0.4rem;">
             <button onclick="editPost('${p.id}')" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.1rem 0.3rem; font-size:0.7rem; cursor:pointer; font-family:'Outfit', sans-serif;">EDIT</button>
@@ -1536,6 +1533,10 @@
       reader.readAsText(file);
       event.target.value = '';
     }
+
+    // Render on initial load
+    renderQSOs();
+    renderBlogList();
   </script>
 </body>
 
