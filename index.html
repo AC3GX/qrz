@@ -2042,6 +2042,51 @@
       }
     }
 
+    function drawMUFHeatmap(ctx, width, height, sfi, k, declination, subsolarLon) {
+      const stepX = 5;
+      const stepY = 5;
+
+      // Base peak and floor frequencies
+      const mufDay = 10 + (sfi * 0.18);
+      const mufNight = 6 + (sfi * 0.03);
+      
+      // Geomagnetic storm penalty scaler
+      let stormPenalty = 1.0;
+      if (k >= 4) {
+        stormPenalty = Math.max(0.6, 1.0 - 0.08 * (k - 3));
+      }
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+
+      for (let y = 0; y < height; y += stepY) {
+        const lat = 90 - (y / height) * 180;
+        for (let x = 0; x < width; x += stepX) {
+          const lon = (x / width) * 360 - 180;
+          const cosZ = getSolarZenithCos(lat, lon, declination, subsolarLon);
+          
+          // Approximate zenith cosine modulation
+          const zenithFactor = Math.max(0, cosZ);
+          let muf = mufNight + (mufDay - mufNight) * Math.sqrt(zenithFactor);
+          muf *= stormPenalty;
+
+          // Define color bounds based on calculated frequency
+          let color = 'rgba(142, 68, 173, 0.06)'; // Violet (<10 MHz)
+          if (muf >= 28) {
+            color = 'rgba(231, 76, 60, 0.22)';  // Red (>28 MHz)
+          } else if (muf >= 21) {
+            color = 'rgba(241, 196, 15, 0.18)'; // Amber (21 MHz)
+          } else if (muf >= 14) {
+            color = 'rgba(46, 204, 113, 0.14)';  // Green (14 MHz)
+          }
+
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, stepX, stepY);
+        }
+      }
+      ctx.restore();
+    }
+
     // Render on initial load
     renderQSOs();
     renderBlogList();
