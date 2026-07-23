@@ -492,10 +492,10 @@
       <div class="console-card" id="main-console-card">
         <div class="card-header" style="padding-bottom:0.25rem; border-bottom:1px solid var(--border-color);">
           <div class="console-tabs">
-            <button class="tab-btn active" onclick="switchTab('logbook')">QSO Logbook</button>
-            <button class="tab-btn" onclick="switchTab('blog')">Station Blog</button>
-            <button class="tab-btn" onclick="switchTab('rss')">Radio News</button>
-            <button class="tab-btn" onclick="switchTab('admin')">Admin Console</button>
+            <button class="tab-btn active" data-tab="logbook" onclick="switchTab('logbook')">QSO Logbook</button>
+            <button class="tab-btn" data-tab="blog" onclick="switchTab('blog')">Station Blog</button>
+            <button class="tab-btn" data-tab="rss" onclick="switchTab('rss')">Radio News</button>
+            <button class="tab-btn" data-tab="admin" onclick="switchTab('admin')">Admin Console</button>
           </div>
         </div>
 
@@ -1790,6 +1790,81 @@
       } catch (e) {}
     }
 
+    function initTabDragAndDrop() {
+      const container = document.querySelector('.console-tabs');
+      if (!container) return;
+      
+      // Load saved order
+      const saved = localStorage.getItem('ac3gx_tab_order');
+      if (saved) {
+        try {
+          const tabOrder = JSON.parse(saved);
+          const buttons = {};
+          container.querySelectorAll('.tab-btn').forEach(btn => {
+            const tabName = btn.getAttribute('data-tab');
+            if (tabName) buttons[tabName] = btn;
+          });
+          tabOrder.forEach(tabName => {
+            if (buttons[tabName]) {
+              container.appendChild(buttons[tabName]);
+            }
+          });
+        } catch (e) {}
+      }
+
+      let draggedTab = null;
+
+      container.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.setAttribute('draggable', 'true');
+
+        btn.addEventListener('dragstart', (e) => {
+          if (!powerOn) {
+            e.preventDefault();
+            return;
+          }
+          draggedTab = btn;
+          e.dataTransfer.effectAllowed = 'move';
+          btn.style.opacity = '0.5';
+        });
+
+        btn.addEventListener('dragend', () => {
+          btn.style.opacity = '1';
+          saveTabOrder();
+        });
+
+        btn.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        });
+
+        btn.addEventListener('drop', (e) => {
+          e.preventDefault();
+          if (draggedTab && draggedTab !== btn) {
+            const allBtns = Array.from(container.querySelectorAll('.tab-btn'));
+            const draggedIdx = allBtns.indexOf(draggedTab);
+            const targetIdx = allBtns.indexOf(btn);
+
+            if (draggedIdx < targetIdx) {
+              container.insertBefore(draggedTab, btn.nextSibling);
+            } else {
+              container.insertBefore(draggedTab, btn);
+            }
+          }
+        });
+      });
+    }
+
+    function saveTabOrder() {
+      const container = document.querySelector('.console-tabs');
+      if (!container) return;
+      const order = [];
+      container.querySelectorAll('.tab-btn').forEach(btn => {
+        const tabName = btn.getAttribute('data-tab');
+        if (tabName) order.push(tabName);
+      });
+      localStorage.setItem('ac3gx_tab_order', JSON.stringify(order));
+    }
+
     // NOAA Live Solar Conditions & Band Quality Analyzer
     async function fetchLiveSolarData() {
       if (!powerOn) return;
@@ -2152,6 +2227,7 @@
     renderBlogList();
     initPanelResizing();
     initDragAndDrop();
+    initTabDragAndDrop();
     fetchLiveSolarData();
     setInterval(fetchLiveSolarData, 60000);
   </script>
