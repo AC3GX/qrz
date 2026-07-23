@@ -700,12 +700,62 @@
       <div class="console-card" id="solar-card">
         <div class="card-header">
           <span>Solar Conditions</span>
-          <span id="solar-update" style="font-size:0.65rem; color:var(--text-secondary);">LIVE FEED</span>
+          <span id="solar-update" style="font-size:0.65rem; color:var(--text-secondary);">LIVE</span>
         </div>
-        <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; min-height:180px; padding:0.25rem 0;">
-          <a href="https://www.hamqsl.com/solar.html" target="_blank" style="display:block; max-width:100%;">
-            <img src="https://www.hamqsl.com/solarxml.php?image=standard" alt="HamQSL Solar Conditions" style="width:100%; max-width:250px; border-radius:4px; border:1px solid var(--border-color); display:block; filter: brightness(0.9) contrast(1.1) saturate(1.1);">
-          </a>
+        <div
+          style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Solar Flux</span>
+            <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="sfi-val">142</span>
+          </div>
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span
+              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Sunspots</span>
+            <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="ssn-val">95</span>
+          </div>
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span
+              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">A-Index</span>
+            <span style="font-size:1.1rem; color:var(--accent-green); font-weight:bold;" id="a-val">6</span>
+          </div>
+          <div
+            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
+            <span
+              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">K-Index</span>
+            <span style="font-size:1.1rem; color:var(--accent-green); font-weight:bold;" id="k-val">2</span>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border-color); padding-top:0.75rem; margin-top:0.25rem;">
+          <div
+            style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:600; text-align:left;">
+            HF Band Conditions</div>
+          <div
+            style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-size:0.75rem; font-family:'JetBrains Mono', monospace;">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+              <span>80m-40m</span>
+              <span id="band-80-40" style="color:var(--accent-green); font-weight:bold;">GOOD</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+              <span>30m-20m</span>
+              <span id="band-30-20" style="color:var(--accent-green); font-weight:bold;">GOOD</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+              <span>17m-15m</span>
+              <span id="band-17-15" style="color:var(--accent-amber); font-weight:bold;">FAIR</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
+              <span>12m-10m</span>
+              <span id="band-12-10" style="color:#ff3b30; font-weight:bold;">POOR</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1675,11 +1725,130 @@
       } catch (e) {}
     }
 
+    // NOAA Live Solar Conditions & Band Quality Analyzer
+    async function fetchLiveSolarData() {
+      if (!powerOn) return;
+      
+      let sfiVal = 142;
+      let ssnVal = 95;
+      let aVal = 6;
+      let kVal = 2;
+      let isLive = false;
+
+      // 1. Fetch SFI (10cm flux summary)
+      try {
+        const sfiRes = await fetch('https://services.swpc.noaa.gov/products/summary/10cm-flux.json');
+        if (sfiRes.ok) {
+          const sfiData = await sfiRes.json();
+          if (Array.isArray(sfiData) && sfiData.length > 0 && sfiData[0].flux) {
+            sfiVal = parseInt(sfiData[0].flux);
+            isLive = true;
+          }
+        }
+      } catch (e) {
+        console.warn('NOAA SFI fetch failed, using simulation: ', e);
+      }
+
+      // 2. Fetch K-Index and A-Index
+      try {
+        const kRes = await fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');
+        if (kRes.ok) {
+          const kData = await kRes.json();
+          if (Array.isArray(kData) && kData.length > 0) {
+            const latest = kData[kData.length - 1];
+            if (latest.Kp !== undefined) {
+              kVal = Math.round(latest.Kp);
+            }
+            if (latest.a_running !== undefined) {
+              aVal = parseInt(latest.a_running);
+            }
+            // Sunspots can be estimated from SFI: SSN ~ (SFI - 70) * 0.9 (approximate solar physics relationship)
+            ssnVal = Math.max(0, Math.round((sfiVal - 70) * 0.9));
+            isLive = true;
+          }
+        }
+      } catch (e) {
+        console.warn('NOAA K-index fetch failed, using simulation: ', e);
+      }
+
+      // 3. Update DOM
+      document.getElementById('sfi-val').textContent = sfiVal;
+      document.getElementById('ssn-val').textContent = ssnVal;
+      document.getElementById('a-val').textContent = aVal;
+      document.getElementById('k-val').textContent = kVal;
+
+      const kColor = kVal > 3 ? '#ff3b30' : (kVal > 2 ? 'var(--accent-amber)' : 'var(--accent-green)');
+      document.getElementById('k-val').style.color = kColor;
+
+      updateHFBands(sfiVal, kVal);
+
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const timeStr = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+      document.getElementById('solar-update').textContent = isLive ? `NOAA ${timeStr} UTC` : `SIM ${timeStr} UTC`;
+    }
+
+    function updateHFBands(sfi, k) {
+      let b80_40 = "GOOD";
+      let b30_20 = "GOOD";
+      let b17_15 = "FAIR";
+      let b12_10 = "POOR";
+
+      if (k >= 5) {
+        b80_40 = "POOR";
+        b30_20 = "POOR";
+        b17_15 = "POOR";
+        b12_10 = "POOR";
+      } else if (k >= 4) {
+        b80_40 = "FAIR";
+        b30_20 = "FAIR";
+        b17_15 = "POOR";
+        b12_10 = "POOR";
+      } else {
+        if (sfi < 90) {
+          b80_40 = "GOOD";
+          b30_20 = "FAIR";
+          b17_15 = "POOR";
+          b12_10 = "POOR";
+        } else if (sfi >= 90 && sfi < 130) {
+          b80_40 = "GOOD";
+          b30_20 = "GOOD";
+          b17_15 = "FAIR";
+          b12_10 = "POOR";
+        } else {
+          b80_40 = "FAIR";
+          b30_20 = "GOOD";
+          b17_15 = "GOOD";
+          b12_10 = "FAIR";
+        }
+      }
+
+      setBandStatus('band-80-40', b80_40);
+      setBandStatus('band-30-20', b30_20);
+      setBandStatus('band-17-15', b17_15);
+      setBandStatus('band-12-10', b12_10);
+    }
+
+    function setBandStatus(id, status) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = status;
+      if (status === "GOOD") {
+        el.style.color = "var(--accent-green)";
+      } else if (status === "FAIR") {
+        el.style.color = "var(--accent-amber)";
+      } else {
+        el.style.color = "#ff3b30";
+      }
+    }
+
     // Render on initial load
     renderQSOs();
     renderBlogList();
     initPanelResizing();
     initDragAndDrop();
+    fetchLiveSolarData();
+    setInterval(fetchLiveSolarData, 60000);
   </script>
 </body>
 
