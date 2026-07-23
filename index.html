@@ -780,6 +780,26 @@
         </div>
       </div>
 
+      <!-- LIVE PROPAGATION MAP CARD -->
+      <div class="console-card" id="map-card" style="display:flex; flex-direction:column; gap:0.5rem;">
+        <div class="card-header">
+          <span>Propagation Map</span>
+          <span style="font-size:0.65rem; color:var(--accent-cyan);">GRAYLINE & MUF</span>
+        </div>
+        <div style="position:relative; width:100%; aspect-ratio:2/1; background:#050508; border-radius:6px; border:1px solid var(--border-color); overflow:hidden;">
+          <canvas id="prop-map-canvas" style="width:100%; height:100%; display:block;"></canvas>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-secondary); padding:0 0.1rem; flex-wrap:wrap; gap:0.25rem;">
+          <div style="display:flex; gap:0.35rem; align-items:center;">
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(142,68,173,0.5); border-radius:50%;"></span> <span>&lt;10M</span>
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(46,204,113,0.5); border-radius:50%;"></span> <span>14M</span>
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(241,196,15,0.5); border-radius:50%;"></span> <span>21M</span>
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(231,76,60,0.5); border-radius:50%;"></span> <span>&gt;28M</span>
+          </div>
+          <span style="font-size:0.65rem; color:var(--text-secondary);">BLN: PA (FN20)</span>
+        </div>
+      </div>
+
       <!-- MORSE CODE KEYER CARD -->
       <div class="console-card">
         <div class="card-header">
