@@ -697,66 +697,15 @@
     <!-- RIGHT COLUMN -->
     <div class="right-col" style="display:flex; flex-direction:column; gap:1.25rem;">
       <!-- SOLAR PROPAGATION CARD -->
-      <div class="console-card">
+      <div class="console-card" id="solar-card">
         <div class="card-header">
           <span>Solar Conditions</span>
-          <span id="solar-update" style="font-size:0.65rem; color:var(--text-secondary);">LIVE</span>
+          <span id="solar-update" style="font-size:0.65rem; color:var(--text-secondary);">LIVE FEED</span>
         </div>
-        <div
-          style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
-          <div
-            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Solar
-              Flux</span>
-            <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="sfi-val">142</span>
-          </div>
-          <div
-            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span
-              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Sunspots</span>
-            <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="ssn-val">95</span>
-          </div>
-          <div
-            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span
-              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">A-Index</span>
-            <span style="font-size:1.1rem; color:var(--accent-green); font-weight:bold;" id="a-val">6</span>
-          </div>
-          <div
-            style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span
-              style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">K-Index</span>
-            <span style="font-size:1.1rem; color:var(--accent-green); font-weight:bold;" id="k-val">2</span>
-          </div>
-        </div>
-
-        <div style="border-top:1px solid var(--border-color); padding-top:0.75rem; margin-top:0.25rem;">
-          <div
-            style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:600;">
-            HF Band Conditions</div>
-          <div
-            style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-size:0.75rem; font-family:'JetBrains Mono', monospace;">
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
-              <span>80m-40m</span>
-              <span style="color:var(--accent-green); font-weight:bold;">GOOD</span>
-            </div>
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
-              <span>30m-20m</span>
-              <span style="color:var(--accent-green); font-weight:bold;">GOOD</span>
-            </div>
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
-              <span>17m-15m</span>
-              <span style="color:var(--accent-amber); font-weight:bold;">FAIR</span>
-            </div>
-            <div
-              style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.35rem 0.5rem; border-radius:4px; border:1px solid var(--border-color);">
-              <span>12m-10m</span>
-              <span style="color:#ff3b30; font-weight:bold;">POOR</span>
-            </div>
-          </div>
+        <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; min-height:180px; padding:0.25rem 0;">
+          <a href="https://www.hamqsl.com/solar.html" target="_blank" style="display:block; max-width:100%;">
+            <img src="https://www.hamqsl.com/solarxml.php?image=standard" alt="HamQSL Solar Conditions" style="width:100%; max-width:250px; border-radius:4px; border:1px solid var(--border-color); display:block; filter: brightness(0.9) contrast(1.1) saturate(1.1);">
+          </a>
         </div>
       </div>
 
@@ -903,29 +852,6 @@
     }
     setInterval(addDmrFeed, 6000);
 
-    // Solar Conditions Updates
-    function updateSolarIndices() {
-      if (!powerOn) return;
-      const currentSFI = 135 + Math.floor(Math.random() * 15);
-      const currentSSN = 85 + Math.floor(Math.random() * 20);
-      const currentA = 4 + Math.floor(Math.random() * 5);
-      const currentK = 1 + Math.floor(Math.random() * 3);
-
-      document.getElementById('sfi-val').textContent = currentSFI;
-      document.getElementById('ssn-val').textContent = currentSSN;
-      document.getElementById('a-val').textContent = currentA;
-      document.getElementById('k-val').textContent = currentK;
-
-      const kColor = currentK > 3 ? '#ff3b30' : (currentK > 2 ? 'var(--accent-amber)' : 'var(--accent-green)');
-      document.getElementById('k-val').style.color = kColor;
-
-      const updateTime = new Date();
-      const pad = (n) => String(n).padStart(2, '0');
-      document.getElementById('solar-update').textContent = `LST UPD: ${pad(updateTime.getUTCHours())}:${pad(updateTime.getUTCMinutes())}:${pad(updateTime.getUTCSeconds())} UTC`;
-    }
-
-    setInterval(updateSolarIndices, 30000);
-    updateSolarIndices();
 
     // FT8 Logbook Manager
     const DEFAULT_QSOS = [
