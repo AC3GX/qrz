@@ -1818,6 +1818,7 @@
         btn.setAttribute('draggable', 'true');
 
         btn.addEventListener('dragstart', (e) => {
+          e.stopPropagation(); // Stop drag event from bubbling to parent console-card!
           if (!powerOn) {
             e.preventDefault();
             return;
@@ -1827,17 +1828,20 @@
           btn.style.opacity = '0.5';
         });
 
-        btn.addEventListener('dragend', () => {
+        btn.addEventListener('dragend', (e) => {
+          e.stopPropagation(); // Stop drag event from bubbling to parent console-card!
           btn.style.opacity = '1';
           saveTabOrder();
         });
 
         btn.addEventListener('dragover', (e) => {
+          e.stopPropagation(); // Stop drag event from bubbling to parent console-card!
           e.preventDefault();
           e.dataTransfer.dropEffect = 'move';
         });
 
         btn.addEventListener('drop', (e) => {
+          e.stopPropagation(); // Stop drag event from bubbling to parent console-card!
           e.preventDefault();
           if (draggedTab && draggedTab !== btn) {
             const allBtns = Array.from(container.querySelectorAll('.tab-btn'));
