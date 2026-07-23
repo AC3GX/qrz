@@ -494,6 +494,7 @@
           <div class="console-tabs">
             <button class="tab-btn active" onclick="switchTab('logbook')">QSO Logbook</button>
             <button class="tab-btn" onclick="switchTab('blog')">Station Blog</button>
+            <button class="tab-btn" onclick="switchTab('rss')">Radio News</button>
             <button class="tab-btn" onclick="switchTab('admin')">Admin Console</button>
           </div>
         </div>
@@ -689,6 +690,26 @@
                 <!-- Catalog table rows injected here -->
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- RSS NEWS TAB CONTENT -->
+        <div id="rss-tab-content" class="tab-content" style="width:100%;">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.25rem;">
+            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Live Amateur Radio Feeds</span>
+            <div style="display:flex; align-items:center; gap:0.4rem;">
+              <select id="rss-feed-select" onchange="loadRssFeed()"
+                style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.35rem 0.5rem; color:white; font-size:0.8rem; outline:none; font-family:'Outfit', sans-serif;">
+                <option value="https://www.arrl.org/arrl.rss">ARRL News</option>
+                <option value="https://forums.qrz.com/index.php?forums/news-and-announcements.14/index.rss">QRZ News</option>
+                <option value="https://hackaday.com/tag/ham-radio/feed/">Hackaday (Ham Radio)</option>
+              </select>
+              <button onclick="loadRssFeed()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.35rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">REFRESH</button>
+            </div>
+          </div>
+          <div id="rss-items-list" class="udop-resize-v"
+            style="display:flex; flex-direction:column; gap:0.75rem; height:400px; overflow-y:auto; padding-right:0.25rem; width:100%; flex:1;">
+            <!-- RSS articles dynamically loaded here -->
           </div>
         </div>
       </div>
@@ -1180,6 +1201,13 @@
           const input = document.getElementById('admin-passcode');
           if (input) input.focus();
         }, 50);
+      }
+
+      if (tabId === 'rss') {
+        const list = document.getElementById('rss-items-list');
+        if (list && list.children.length === 0) {
+          loadRssFeed();
+        }
       }
     }
 
@@ -1840,6 +1868,88 @@
       } else {
         el.style.color = "#ff3b30";
       }
+    }
+
+    // Live RSS Feed Reader
+    async function loadRssFeed() {
+      const select = document.getElementById('rss-feed-select');
+      if (!select) return;
+      const url = select.value;
+      const container = document.getElementById('rss-items-list');
+      if (!container) return;
+
+      container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem; text-shadow:0 0 5px var(--accent-glow-cyan);">[LOADING NEWS TELEMETRY FEED...]</div>`;
+
+      try {
+        const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+        if (!res.ok) throw new Error('Network response not ok');
+        const data = await res.json();
+        
+        if (data.status === 'ok' && Array.isArray(data.items)) {
+          renderRssItems(data.items);
+        } else {
+          throw new Error(data.message || 'Failed to parse RSS feed');
+        }
+      } catch (e) {
+        console.error('RSS fetch failed: ', e);
+        container.innerHTML = `
+          <div style="text-align:center; padding:2.5rem 1rem; color:var(--text-secondary); font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem; justify-content:center; align-items:center; height:100%;">
+            <span style="color:#ff3b30; font-weight:bold;">[FEED TELEMETRY LINK OFFLINE]</span>
+            <span>Could not connect to the live news server.</span>
+            <button onclick="loadRssFeed()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.25rem 0.5rem; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif; font-weight:600; margin-top:0.5rem;">RETRY LINK</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderRssItems(items) {
+      const container = document.getElementById('rss-items-list');
+      container.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-secondary); font-size:0.85rem;">No items found in this feed.</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        // Strip HTML from description
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = item.description || '';
+        let summary = tempDiv.textContent || tempDiv.innerText || '';
+        summary = summary.replace(/\s+/g, ' ').trim();
+        if (summary.length > 200) {
+          summary = summary.substring(0, 200) + '...';
+        }
+
+        const date = new Date(item.pubDate.replace(/-/g, '/'));
+        const dateStr = isNaN(date.getTime()) ? item.pubDate : date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        const card = document.createElement('div');
+        card.className = 'blog-card';
+        card.style.background = 'var(--bg-card)';
+        card.style.border = '1px solid var(--border-color)';
+        card.style.borderRadius = '8px';
+        card.style.padding = '0.85rem';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.gap = '0.35rem';
+        card.style.textAlign = 'left';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+            <a href="${item.link}" target="_blank" style="color:var(--accent-cyan); font-weight:600; text-decoration:none; font-size:0.9rem; line-height:1.2; display:block;">
+              ${item.title}
+            </a>
+          </div>
+          <div style="font-family:'JetBrains Mono', monospace; font-size:0.7rem; color:var(--text-secondary);">
+            PUB DATE: ${dateStr}
+          </div>
+          <div style="font-size:0.8rem; color:var(--text-primary); line-height:1.4;">
+            ${summary}
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
     // Render on initial load
