@@ -2010,6 +2010,38 @@
       });
     }
 
+    function getSolarDeclination(dayOfYear) {
+      // Approximate solar declination angle in radians
+      return 0.409 * Math.sin((2 * Math.PI / 365) * (dayOfYear - 80));
+    }
+
+    function getSolarZenithCos(lat, lon, declination, subsolarLon) {
+      const phi = lat * Math.PI / 180;
+      const delta = declination;
+      const lambda = lon * Math.PI / 180;
+      const lambda0 = subsolarLon * Math.PI / 180;
+      
+      // Return cosine of the solar zenith angle
+      return Math.sin(phi) * Math.sin(delta) + Math.cos(phi) * Math.cos(delta) * Math.cos(lambda - lambda0);
+    }
+
+    function drawDayNightShadow(ctx, width, height, declination, subsolarLon) {
+      const gridW = 4; // grid resolution in pixels
+      const gridH = 4;
+      
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      for (let y = 0; y < height; y += gridH) {
+        const lat = 90 - (y / height) * 180;
+        for (let x = 0; x < width; x += gridW) {
+          const lon = (x / width) * 360 - 180;
+          const cosZ = getSolarZenithCos(lat, lon, declination, subsolarLon);
+          if (cosZ < 0) {
+            ctx.fillRect(x, y, gridW, gridH);
+          }
+        }
+      }
+    }
+
     // Render on initial load
     renderQSOs();
     renderBlogList();
