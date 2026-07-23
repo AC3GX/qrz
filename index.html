@@ -1829,6 +1829,7 @@
       document.getElementById('k-val').style.color = kColor;
 
       updateHFBands(sfiVal, kVal);
+      renderPropagationMap(sfiVal, kVal);
 
       const now = new Date();
       const pad = (n) => String(n).padStart(2, '0');
@@ -2085,6 +2086,48 @@
         }
       }
       ctx.restore();
+    }
+
+    function renderPropagationMap(sfi, k) {
+      const canvas = document.getElementById('prop-map-canvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.offsetWidth || 300;
+      const h = canvas.height = canvas.offsetHeight || 150;
+
+      // 1. Draw vectors
+      drawBaseMap(ctx, w, h);
+
+      // 2. Solar calculations
+      const now = new Date();
+      // Day of Year
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+      
+      const declination = getSolarDeclination(dayOfYear);
+      // Subsolar longitude in degrees
+      const subsolarLon = -15 * (now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600);
+
+      // 3. Draw MUF Heatmap
+      drawMUFHeatmap(ctx, w, h, sfi, k, declination, subsolarLon);
+
+      // 4. Draw Day/Night Shadow
+      drawDayNightShadow(ctx, w, h, declination, subsolarLon);
+
+      // 5. Draw PA Blinker (FN20: -75.3 Longitude, 40.0 Latitude)
+      const paX = ((-75.3 + 180) / 360) * w;
+      const paY = ((90 - 40.0) / 180) * h;
+
+      ctx.beginPath();
+      ctx.arc(paX, paY, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = 'var(--accent-amber)';
+      ctx.shadowColor = 'var(--accent-amber)';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0; // reset
     }
 
     // Render on initial load
