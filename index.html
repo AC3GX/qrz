@@ -439,7 +439,7 @@
     <!-- LEFT COLUMN -->
     <div class="left-col" style="display:flex; flex-direction:column; gap:1.25rem;">
       <!-- BIO / STATION CARD -->
-      <div class="console-card">
+      <div class="console-card" id="profile-card">
         <div class="card-header">
           <span>Station Profile</span>
           <span style="font-size:0.7rem; color:var(--accent-green);">● ACTIVE</span>
@@ -468,7 +468,7 @@
       </div>
 
       <!-- DMR MONITOR CARD -->
-      <div class="console-card">
+      <div class="console-card" id="dmr-card">
         <div class="card-header">
           <span>DMR Live Monitor</span>
           <span style="font-size:0.7rem; color:var(--accent-cyan);">BM LINK</span>
@@ -489,7 +489,7 @@
     <!-- CENTER COLUMN -->
     <div class="center-col" style="display:flex; flex-direction:column; gap:1.25rem;">
       <!-- LOG BOOK CARD -->
-      <div class="console-card">
+      <div class="console-card" id="main-console-card">
         <div class="card-header" style="padding-bottom:0.25rem; border-bottom:1px solid var(--border-color);">
           <div class="console-tabs">
             <button class="tab-btn active" onclick="switchTab('logbook')">QSO Logbook</button>
@@ -801,7 +801,7 @@
       </div>
 
       <!-- MORSE CODE KEYER CARD -->
-      <div class="console-card">
+      <div class="console-card" id="morse-card">
         <div class="card-header">
           <span>CW Morse Keyer</span>
           <span style="font-size:0.7rem; color:var(--accent-amber);">700 Hz sidetone</span>
@@ -1761,6 +1761,23 @@
       if (!saved) return;
       try {
         const order = JSON.parse(saved);
+        
+        // Defensive check: reset the order if it contains legacy index-based IDs
+        let hasLegacy = false;
+        order.forEach(col => {
+          if (Array.isArray(col)) {
+            col.forEach(id => {
+              if (typeof id === 'string' && id.startsWith('panel-')) {
+                hasLegacy = true;
+              }
+            });
+          }
+        });
+        if (hasLegacy) {
+          localStorage.removeItem('ac3gx_panel_order');
+          return;
+        }
+
         const cols = document.querySelectorAll('.console-grid > div');
         order.forEach((colCards, colIdx) => {
           const col = cols[colIdx];
