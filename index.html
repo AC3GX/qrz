@@ -1202,14 +1202,43 @@
     function decodeCharacter() {
       if (!currentLetterSignal) return;
       const char = MORSE_CODE[currentLetterSignal] || '?';
-      document.getElementById('morse-output').textContent += char;
       currentLetterSignal = '';
 
-      const wpm = parseInt(wpmSlider.value);
-      const dotLength = 1200 / wpm;
-      morseTimer = setTimeout(() => {
-        document.getElementById('morse-output').textContent += ' ';
-      }, dotLength * 4);
+      const activePanel = document.getElementById('morse-panel-trainer');
+      const isTrainerMode = activePanel && activePanel.style.display === 'flex';
+
+      if (isTrainerMode) {
+        trainerState.total++;
+        const keyBtn = document.getElementById('morse-key-btn');
+        
+        if (char === trainerState.target) {
+          trainerState.correct++;
+          // Flash Green
+          keyBtn.style.borderColor = 'var(--accent-green)';
+          keyBtn.style.background = 'rgba(46,204,113,0.2)';
+          setTimeout(() => {
+            keyBtn.style.borderColor = 'var(--border-color)';
+            keyBtn.style.background = 'var(--bg-card)';
+            initTrainer();
+          }, 500);
+        } else {
+          // Flash Red
+          keyBtn.style.borderColor = '#ff3b30';
+          keyBtn.style.background = 'rgba(255,59,48,0.2)';
+          setTimeout(() => {
+            keyBtn.style.borderColor = 'var(--border-color)';
+            keyBtn.style.background = 'var(--bg-card)';
+            document.getElementById('trainer-score').textContent = `SCORE: ${trainerState.correct}/${trainerState.total}`;
+          }, 500);
+        }
+      } else {
+        document.getElementById('morse-output').textContent += char;
+        const wpm = parseInt(wpmSlider.value);
+        const dotLength = 1200 / wpm;
+        morseTimer = setTimeout(() => {
+          document.getElementById('morse-output').textContent += ' ';
+        }, dotLength * 4);
+      }
     }
 
     function clearMorseText() {
@@ -1331,8 +1360,33 @@
       }, timeOffset);
       playbackTimeouts.push(doneTimeout);
     }
+    let trainerState = {
+      target: '',
+      correct: 0,
+      total: 0
+    };
 
-    function initTrainer() {}
+    function initTrainer() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const randChar = letters[Math.floor(Math.random() * letters.length)];
+      trainerState.target = randChar;
+      
+      // Find corresponding code
+      let targetCode = '';
+      for (const [code, char] of Object.entries(MORSE_CODE)) {
+        if (char === randChar) {
+          targetCode = code;
+          break;
+        }
+      }
+
+      const targetEl = document.getElementById('trainer-target');
+      if (targetEl) targetEl.textContent = randChar;
+      const hintEl = document.getElementById('trainer-hint');
+      if (hintEl) hintEl.textContent = `(${targetCode})`;
+      const scoreEl = document.getElementById('trainer-score');
+      if (scoreEl) scoreEl.textContent = `SCORE: ${trainerState.correct}/${trainerState.total}`;
+    }
 
     // Tab Navigation
     function switchTab(tabId) {
