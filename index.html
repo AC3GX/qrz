@@ -1253,7 +1253,85 @@
       }
     }
 
-    function stopCWSidetone() {}
+    let playbackTimeouts = [];
+
+    function stopCWSidetone() {
+      playbackTimeouts.forEach(t => clearTimeout(t));
+      playbackTimeouts = [];
+      stopTone();
+      const highlight = document.getElementById('cw-playback-highlight');
+      if (highlight) highlight.textContent = '-';
+    }
+
+    function playCWSidetone() {
+      stopCWSidetone();
+      const textInput = document.getElementById('cw-text-input');
+      const text = textInput ? textInput.value.toUpperCase().trim() : '';
+      if (!text) return;
+      
+      const wpm = parseInt(wpmSlider.value);
+      const dotLength = 1200 / wpm; // ms
+      
+      // Reverse lookup mapping for alphanumeric characters to dot-dash codes
+      const REVERSE_MORSE = {};
+      for (const [code, char] of Object.entries(MORSE_CODE)) {
+        REVERSE_MORSE[char] = code;
+      }
+
+      let timeOffset = 0;
+      
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === ' ') {
+          // Word boundary: 7 dots total gap. (already has 3 dots gap from last char, add 4 more)
+          timeOffset += dotLength * 4;
+          continue;
+        }
+        
+        const code = REVERSE_MORSE[char];
+        if (!code) continue;
+
+        // Schedule character highlight
+        const highlightTimeout = setTimeout(() => {
+          const highlight = document.getElementById('cw-playback-highlight');
+          if (highlight) highlight.textContent = `[${char}]   ${code}`;
+        }, timeOffset);
+        playbackTimeouts.push(highlightTimeout);
+
+        for (let j = 0; j < code.length; j++) {
+          const sym = code[j];
+          const symDuration = sym === '.' ? dotLength : dotLength * 3;
+
+          // Schedule tone start
+          const startTimeout = setTimeout(() => {
+            startTone();
+          }, timeOffset);
+          playbackTimeouts.push(startTimeout);
+
+          timeOffset += symDuration;
+
+          // Schedule tone stop
+          const stopTimeout = setTimeout(() => {
+            stopTone();
+          }, timeOffset);
+          playbackTimeouts.push(stopTimeout);
+
+          // Inter-symbol gap: 1 dot length
+          timeOffset += dotLength;
+        }
+        
+        // Inter-character gap: 3 dots total (already has 1 dot from last symbol, add 2 more)
+        timeOffset += dotLength * 2;
+      }
+
+      // Done playing reset
+      const doneTimeout = setTimeout(() => {
+        const highlight = document.getElementById('cw-playback-highlight');
+        if (highlight) highlight.textContent = 'DONE';
+      }, timeOffset);
+      playbackTimeouts.push(doneTimeout);
+    }
+
     function initTrainer() {}
 
     // Tab Navigation
