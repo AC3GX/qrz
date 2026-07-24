@@ -991,6 +991,115 @@
   <script>
     let powerOn = localStorage.getItem('ac3gx_power_on') !== 'false';
 
+    const DOCUMENTATION_CATALOG = [
+      {
+        id: 'anytone-578-manual',
+        title: 'Anytone AT-578UVIII Plus Operating Manual',
+        type: 'pdf',
+        path: 'docs/manuals/anytone-at-578uviii-plus-manual.pdf',
+        description: 'Official operating manual detailing operations, settings, and DMR features.'
+      }
+    ];
+
+    function renderDocsCatalog(filterQuery = '') {
+      const list = document.getElementById('docs-catalog-list');
+      if (!list) return;
+      list.innerHTML = '';
+      
+      const query = filterQuery.toLowerCase().trim();
+      const filtered = DOCUMENTATION_CATALOG.filter(d => 
+        d.title.toLowerCase().includes(query) || d.description.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<div style="text-align:center; padding:3rem; color:var(--text-secondary); font-style:italic;">No documents found matching search criteria.</div>';
+        return;
+      }
+
+      filtered.forEach(doc => {
+        const card = document.createElement('div');
+        card.className = 'blog-card';
+        card.style.background = 'var(--bg-card)';
+        card.style.border = '1px solid var(--border-color)';
+        card.style.borderRadius = '8px';
+        card.style.padding = '0.85rem';
+        card.style.display = 'flex';
+        card.style.flexDirection = 'column';
+        card.style.gap = '0.35rem';
+        card.style.textAlign = 'left';
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <span style="color:var(--accent-cyan); font-weight:600; font-size:0.9rem;">${doc.title}</span>
+            <span style="font-size:0.65rem; padding:0.15rem 0.35rem; border-radius:4px; font-family:'JetBrains Mono', monospace; font-weight:bold; background:var(--bg-primary); border:1px solid var(--border-color); color:var(--text-secondary); text-transform:uppercase;">${doc.type}</span>
+          </div>
+          <div style="font-size:0.8rem; color:var(--text-primary); line-height:1.4;">
+            ${doc.description}
+          </div>
+          <button onclick="openDocViewer('${doc.id}')" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); font-weight:600; padding:0.3rem 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer; align-self:flex-start; margin-top:0.25rem;">READ DOCUMENT</button>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function filterDocs() {
+      const input = document.getElementById('docs-search');
+      renderDocsCatalog(input ? input.value : '');
+    }
+
+    function openDocViewer(docId) {
+      const doc = DOCUMENTATION_CATALOG.find(d => d.id === docId);
+      if (!doc) return;
+
+      document.getElementById('docs-viewer-title').textContent = doc.title;
+      const container = document.getElementById('docs-frame-container');
+      if (!container) return;
+
+      if (doc.type === 'pdf') {
+        container.innerHTML = `<iframe src="${doc.path}" style="width:100%; height:100%; border:none;"></iframe>`;
+      } else if (doc.type === 'md') {
+        container.innerHTML = '<div style="text-align:center; padding:3rem; color:var(--accent-cyan);">[LOADING DOCUMENT...]</div>';
+        fetch(doc.path)
+          .then(res => {
+            if (!res.ok) throw new Error('File not found');
+            return res.text();
+          })
+          .then(text => {
+            let compiled = text
+              .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+              .replace(/^##\s+(.*)$/gmi, '<h2 style="color:var(--accent-green);border-bottom:1px solid var(--border-color);padding-bottom:0.25rem;margin-top:1rem;">$1</h2>')
+              .replace(/^\*\*(.*?)\*\*/gmi, '<strong>$1</strong>')
+              .replace(/^\*(.*?)\*/gmi, '<em>$1</em>')
+              .replace(/`(.*?)`/g, '<code style="background:var(--bg-primary);padding:0.1rem 0.3rem;border-radius:3px;font-family:\'JetBrains Mono\',monospace;color:var(--accent-cyan);">$1</code>')
+              .replace(/^-\s+(.*)$/gmi, '<li style="margin-left:1rem;margin-bottom:0.25rem;">$1</li>')
+              .replace(/\n/g, '<br>');
+            
+            container.innerHTML = `
+              <div style="padding:1rem; overflow-y:auto; height:100%; text-align:left; font-size:0.9rem; line-height:1.6; color:var(--text-primary);">
+                ${compiled}
+              </div>
+            `;
+          })
+          .catch(err => {
+            container.innerHTML = `
+              <div style="text-align:center; padding:3rem; color:#ff3b30;">
+                <strong>[ERROR LOADING DOCUMENT]</strong><br>${err.message}
+              </div>
+            `;
+          });
+      }
+
+      document.getElementById('docs-catalog-view').style.display = 'none';
+      document.getElementById('docs-viewer-view').style.display = 'flex';
+    }
+
+    function closeDocViewer() {
+      const container = document.getElementById('docs-frame-container');
+      if (container) container.innerHTML = '';
+      document.getElementById('docs-viewer-view').style.display = 'none';
+      document.getElementById('docs-catalog-view').style.display = 'flex';
+    }
+
     function setPowerState(state) {
       powerOn = state;
       const btn = document.getElementById('power-btn');
@@ -2579,6 +2688,7 @@
     setPowerState(powerOn);
     renderQSOs();
     renderBlogList();
+    renderDocsCatalog();
     loadRssFeed();
     initPanelResizing();
     initDragAndDrop();
