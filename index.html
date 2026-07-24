@@ -954,7 +954,49 @@
   </footer>
 
   <script>
-    let powerOn = true;
+    let powerOn = localStorage.getItem('ac3gx_power_on') !== 'false';
+
+    function setPowerState(state) {
+      powerOn = state;
+      const btn = document.getElementById('power-btn');
+      const led = document.getElementById('power-led');
+      const grid = document.getElementById('console-grid');
+      if (!btn || !led || !grid) return;
+
+      if (powerOn) {
+        btn.textContent = "PWR ON";
+        btn.classList.remove('off');
+        led.style.backgroundColor = "var(--accent-green)";
+        led.style.boxShadow = "0 0 10px var(--accent-green)";
+        grid.style.opacity = "1";
+        grid.style.pointerEvents = "auto";
+      } else {
+        btn.textContent = "PWR OFF";
+        btn.classList.add('off');
+        led.style.backgroundColor = "#ff3b30";
+        led.style.boxShadow = "0 0 10px #ff3b30";
+        grid.style.opacity = "0.2";
+        grid.style.pointerEvents = "none";
+        
+        if (typeof stopCWSidetone === 'function') {
+          stopCWSidetone();
+        }
+      }
+    }
+
+    function togglePower() {
+      setPowerState(!powerOn);
+      localStorage.setItem('ac3gx_power_on', powerOn);
+    }
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'ac3gx_power_on') {
+        const newPowerState = e.newValue === 'true';
+        if (powerOn !== newPowerState) {
+          setPowerState(newPowerState);
+        }
+      }
+    });
 
     function updateClocks() {
       const now = new Date();
@@ -971,29 +1013,6 @@
       const uM = pad(now.getUTCMinutes());
       const uS = pad(now.getUTCSeconds());
       document.getElementById('utc-clock').textContent = `${uH}:${uM}:${uS}`;
-    }
-
-    function togglePower() {
-      powerOn = !powerOn;
-      const btn = document.getElementById('power-btn');
-      const led = document.getElementById('power-led');
-      const grid = document.getElementById('console-grid');
-
-      if (powerOn) {
-        btn.textContent = "PWR ON";
-        btn.classList.remove('off');
-        led.style.backgroundColor = "var(--accent-green)";
-        led.style.boxShadow = "0 0 10px var(--accent-green)";
-        grid.style.opacity = "1";
-        grid.style.pointerEvents = "auto";
-      } else {
-        btn.textContent = "PWR OFF";
-        btn.classList.add('off');
-        led.style.backgroundColor = "#ff3b30";
-        led.style.boxShadow = "0 0 10px #ff3b30";
-        grid.style.opacity = "0.2";
-        grid.style.pointerEvents = "none";
-      }
     }
 
     setInterval(updateClocks, 1000);
@@ -2435,6 +2454,7 @@
     }
 
     // Render on initial load
+    setPowerState(powerOn);
     renderQSOs();
     renderBlogList();
     initPanelResizing();
