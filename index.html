@@ -1643,6 +1643,8 @@
 
     // Tab Navigation
     function switchTab(tabId) {
+      localStorage.setItem('ac3gx_active_tab', tabId);
+
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
@@ -2728,7 +2730,8 @@
     renderQSOs();
     renderBlogList();
     renderDocsCatalog();
-    loadRssFeed();
+    const activeTab = localStorage.getItem('ac3gx_active_tab') || 'rss';
+    switchTab(activeTab);
     initPanelResizing();
     initDragAndDrop();
     initTabDragAndDrop();
