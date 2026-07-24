@@ -767,7 +767,6 @@
       <div class="console-card" id="solar-card">
         <div class="card-header">
           <span>Solar Conditions</span>
-          <span id="solar-update" style="font-size:0.65rem; color:var(--text-secondary);">LIVE</span>
         </div>
         <div
           style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
@@ -2136,7 +2135,10 @@
       const now = new Date();
       const pad = (n) => String(n).padStart(2, '0');
       const timeStr = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
-      document.getElementById('solar-update').textContent = isLive ? `NOAA ${timeStr} UTC` : `SIM ${timeStr} UTC`;
+      const solarUpdateEl = document.getElementById('solar-update');
+      if (solarUpdateEl) {
+        solarUpdateEl.textContent = isLive ? `NOAA ${timeStr} UTC` : `SIM ${timeStr} UTC`;
+      }
     }
 
     function updateHFBands(sfi, k) {
