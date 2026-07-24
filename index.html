@@ -1039,7 +1039,7 @@
           <div style="font-size:0.8rem; color:var(--text-primary); line-height:1.4;">
             ${doc.description}
           </div>
-          <button onclick="openDocViewer('${doc.id}')" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); font-weight:600; padding:0.3rem 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer; align-self:flex-start; margin-top:0.25rem;">READ DOCUMENT</button>
+          <a href="${doc.path}" target="_blank" style="display:inline-block; background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); font-weight:600; padding:0.3rem 0.6rem; border-radius:4px; font-size:0.75rem; text-decoration:none; align-self:flex-start; margin-top:0.25rem;" onmouseover="this.style.background='var(--accent-cyan)'; this.style.color='var(--bg-primary)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent-cyan)';">READ DOCUMENT</a>
         `;
         list.appendChild(card);
       });
