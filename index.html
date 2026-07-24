@@ -34,6 +34,7 @@
       padding-bottom: 0.5rem;
       width: 100%;
     }
+
     .tab-btn {
       background: transparent;
       border: none;
@@ -46,19 +47,23 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
+
     .tab-btn:hover {
       color: var(--text-primary);
       text-shadow: 0 0 8px var(--accent-cyan);
     }
+
     .tab-btn.active {
       color: var(--accent-cyan);
       border-color: var(--accent-cyan);
       text-shadow: 0 0 8px var(--accent-glow-cyan);
     }
+
     .tab-content {
       display: none;
       flex: 1;
     }
+
     .tab-content.active {
       display: flex;
       flex-direction: column;
@@ -77,11 +82,13 @@
       width: 100%;
       text-align: left;
     }
+
     .blog-card:hover {
       border-color: var(--accent-cyan);
       box-shadow: 0 0 8px var(--accent-glow-cyan);
       transform: translateY(-1px);
     }
+
     .blog-meta {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
@@ -90,12 +97,14 @@
       justify-content: space-between;
       margin-bottom: 0.4rem;
     }
+
     .blog-title {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--accent-green);
       margin-bottom: 0.4rem;
     }
+
     .blog-tag {
       display: inline-block;
       background: var(--bg-primary);
@@ -284,13 +293,16 @@
       width: 4px;
       height: 4px;
     }
+
     .console-card::-webkit-scrollbar-track {
       background: transparent;
     }
+
     .console-card::-webkit-scrollbar-thumb {
       background: var(--border-color);
       border-radius: 2px;
     }
+
     .console-card::-webkit-scrollbar-thumb:hover {
       background: var(--accent-cyan);
     }
@@ -385,7 +397,8 @@
         font-size: 0.7rem !important;
       }
 
-      th, td {
+      th,
+      td {
         padding: 0.4rem 0.5rem !important;
       }
 
@@ -459,7 +472,7 @@
             <div
               style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.25rem;">
               Rig / Hardware</div>
-            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">ICOM
+            <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
               Yeasu FT-891 (HF)</div>
             <div style="color:var(--accent-cyan); font-family:'JetBrains Mono', monospace; font-size:0.85rem;">80-10m
               End Fed Wire</div>
@@ -484,7 +497,8 @@
         <!-- LOGBOOK TAB CONTENT -->
         <div id="logbook-tab-content" class="tab-content active">
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Digital Modes Contact Logger</span>
+            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Digital Modes
+              Contact Logger</span>
             <button onclick="exportADIF()"
               style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Export
               ADIF</button>
@@ -572,36 +586,51 @@
 
         <!-- BLOG TAB CONTENT -->
         <div id="blog-tab-content" class="tab-content" style="position:relative;">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap; width:100%;">
-            <input type="text" id="blog-search" oninput="filterBlog()" placeholder="Search posts..." style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; width:100%; max-width:200px; color:white; font-size:0.8rem; outline:none;">
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap; width:100%;">
+            <input type="text" id="blog-search" oninput="filterBlog()" placeholder="Search posts..."
+              style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; width:100%; max-width:200px; color:white; font-size:0.8rem; outline:none;">
             <div id="blog-tag-filters" style="display:flex; gap:0.4rem; overflow-x:auto; max-width: 100%;">
               <!-- Clickable tags dynamically added here -->
             </div>
           </div>
-          <div id="blog-posts-list" class="udop-resize-v" style="display:flex; flex-direction:column; gap:0.75rem; height:450px; padding-right:0.25rem; width:100%; flex: 1;">
+          <div id="blog-posts-list" class="udop-resize-v"
+            style="display:flex; flex-direction:column; gap:0.75rem; height:450px; padding-right:0.25rem; width:100%; flex: 1;">
             <!-- Blog post cards injected here -->
           </div>
           <!-- READER OVERLAY MODAL -->
-          <div id="blog-reader-overlay" style="display:none; position:absolute; inset:0; background:var(--bg-panel); border-radius:10px; z-index:100; flex-direction:column; padding:1.25rem; gap:0.75rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; width:100%;">
+          <div id="blog-reader-overlay"
+            style="display:none; position:absolute; inset:0; background:var(--bg-panel); border-radius:10px; z-index:100; flex-direction:column; padding:1.25rem; gap:0.75rem;">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; width:100%;">
               <h3 id="reader-title" style="color:var(--accent-green); margin:0;"></h3>
-              <button onclick="closeReader()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[CLOSE]</button>
+              <button onclick="closeReader()"
+                style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[CLOSE]</button>
             </div>
-            <div id="reader-meta" style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-secondary); display:flex; gap:1rem;"></div>
-            <div id="reader-body" class="udop-resize-v" style="padding-right:0.25rem; margin:0.25rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; text-align:left; height: 400px; flex:1;">
+            <div id="reader-meta"
+              style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-secondary); display:flex; gap:1rem;">
+            </div>
+            <div id="reader-body" class="udop-resize-v"
+              style="padding-right:0.25rem; margin:0.25rem 0; border-bottom:1px solid var(--border-color); font-size:0.9rem; text-align:left; height: 400px; flex:1;">
               <!-- Compiled Markdown text goes here -->
             </div>
-            
+
             <!-- COMMENTS -->
             <div style="display:flex; flex-direction:column; gap:0.5rem; max-height:160px; width:100%;">
-              <div style="font-weight:bold; font-size:0.8rem; text-transform:uppercase; color:var(--text-secondary); text-align:left;">Comments</div>
-              <div id="reader-comments" style="overflow-y:auto; display:flex; flex-direction:column; gap:0.35rem; flex:1; font-size:0.75rem; width:100%; max-height:80px;">
+              <div
+                style="font-weight:bold; font-size:0.8rem; text-transform:uppercase; color:var(--text-secondary); text-align:left;">
+                Comments</div>
+              <div id="reader-comments"
+                style="overflow-y:auto; display:flex; flex-direction:column; gap:0.35rem; flex:1; font-size:0.75rem; width:100%; max-height:80px;">
                 <!-- Comments injected here -->
               </div>
               <form id="comment-form" onsubmit="submitComment(event)" style="display:flex; gap:0.35rem; width:100%;">
-                <input type="text" id="comment-name" required placeholder="Name" style="width:80px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.3rem; color:white; font-size:0.75rem; outline:none;">
-                <input type="text" id="comment-text" required placeholder="Write a comment..." style="flex:1; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.3rem; color:white; font-size:0.75rem; outline:none;">
-                <button type="submit" style="background:var(--accent-cyan); color:var(--bg-primary); border:none; padding:0.3rem 0.6rem; border-radius:4px; font-weight:bold; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">SEND</button>
+                <input type="text" id="comment-name" required placeholder="Name"
+                  style="width:80px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.3rem; color:white; font-size:0.75rem; outline:none;">
+                <input type="text" id="comment-text" required placeholder="Write a comment..."
+                  style="flex:1; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.3rem; color:white; font-size:0.75rem; outline:none;">
+                <button type="submit"
+                  style="background:var(--accent-cyan); color:var(--bg-primary); border:none; padding:0.3rem 0.6rem; border-radius:4px; font-weight:bold; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">SEND</button>
               </form>
             </div>
           </div>
@@ -610,11 +639,16 @@
         <!-- ADMIN TAB CONTENT -->
         <div id="admin-tab-content" class="tab-content" style="width:100%;">
           <!-- AUTH PANEL -->
-          <div id="admin-auth-pane" style="display:flex; flex-direction:column; gap:0.75rem; align-items:center; justify-content:center; padding:2rem 0; width:100%;">
-            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Admin Access Required</span>
+          <div id="admin-auth-pane"
+            style="display:flex; flex-direction:column; gap:0.75rem; align-items:center; justify-content:center; padding:2rem 0; width:100%;">
+            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Admin Access
+              Required</span>
             <div style="display:flex; gap:0.5rem; width:100%; max-width:300px; justify-content:center;">
-              <input type="password" id="admin-passcode" onkeydown="if(event.key === 'Enter') loginAdmin()" placeholder="Enter Access Code" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; text-align:center; font-family:'JetBrains Mono', monospace; flex:1;">
-              <button onclick="loginAdmin()" style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.4rem 0.8rem; border-radius:4px; font-weight:bold; cursor:pointer; font-size:0.85rem; font-family:'Outfit', sans-serif;">ACCESS</button>
+              <input type="password" id="admin-passcode" onkeydown="if(event.key === 'Enter') loginAdmin()"
+                placeholder="Enter Access Code"
+                style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; text-align:center; font-family:'JetBrains Mono', monospace; flex:1;">
+              <button onclick="loginAdmin()"
+                style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.4rem 0.8rem; border-radius:4px; font-weight:bold; cursor:pointer; font-size:0.85rem; font-family:'Outfit', sans-serif;">ACCESS</button>
             </div>
             <span id="auth-error" style="color:#ff3b30; font-size:0.75rem; display:none;">Invalid Code. Retry.</span>
           </div>
@@ -623,52 +657,78 @@
           <div id="admin-editor-pane" style="display:none; flex-direction:column; gap:0.75rem; width:100%;">
             <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
               <span style="font-size:0.8rem; color:var(--accent-green); font-weight:bold;">COMPOSER WORKSTATION</span>
-              <button onclick="logoutAdmin()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">Exit Console</button>
+              <button onclick="logoutAdmin()"
+                style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">Exit
+                Console</button>
             </div>
 
             <!-- DATABASE ACTIONS -->
-            <div style="display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color); padding:0.5rem; border-radius:4px; margin-bottom:0.25rem; background:var(--bg-card); width:100%;">
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color); padding:0.5rem; border-radius:4px; margin-bottom:0.25rem; background:var(--bg-card); width:100%;">
               <span style="font-size:0.75rem; color:var(--text-secondary);">Database Actions</span>
               <div style="display:flex; gap:0.4rem; align-items:center;">
-                <button onclick="exportBlogDB()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Export JSON</button>
-                <input type="file" id="import-blog-input" accept=".json" onchange="importBlogDB(event)" style="display:none;">
-                <button onclick="document.getElementById('import-blog-input').click()" style="background:transparent; border:1px solid var(--accent-amber); color:var(--accent-amber); border-radius:3px; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Import JSON</button>
+                <button onclick="exportBlogDB()"
+                  style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Export
+                  JSON</button>
+                <input type="file" id="import-blog-input" accept=".json" onchange="importBlogDB(event)"
+                  style="display:none;">
+                <button onclick="document.getElementById('import-blog-input').click()"
+                  style="background:transparent; border:1px solid var(--accent-amber); color:var(--accent-amber); border-radius:3px; padding:0.2rem 0.5rem; font-size:0.7rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">Import
+                  JSON</button>
               </div>
             </div>
 
             <!-- COMPOSE FORM -->
-            <form id="blog-form" onsubmit="savePost(event)" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:0.75rem; display:flex; flex-direction:column; gap:0.5rem; width:100%;">
+            <form id="blog-form" onsubmit="savePost(event)"
+              style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:0.75rem; display:flex; flex-direction:column; gap:0.5rem; width:100%;">
               <input type="hidden" id="edit-post-id">
               <div style="display:grid; grid-template-columns: 2fr 1fr; gap:0.5rem; width:100%;">
                 <div>
-                  <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Title</label>
-                  <input type="text" id="post-title" required placeholder="Post Title" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'Outfit', sans-serif;">
+                  <label
+                    style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Title</label>
+                  <input type="text" id="post-title" required placeholder="Post Title"
+                    style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'Outfit', sans-serif;">
                 </div>
                 <div>
-                  <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Tags (comma-separated)</label>
-                  <input type="text" id="post-tags" placeholder="e.g. Hardware, FT8" style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'JetBrains Mono', monospace;">
+                  <label
+                    style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Tags
+                    (comma-separated)</label>
+                  <input type="text" id="post-tags" placeholder="e.g. Hardware, FT8"
+                    style="width:100%; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'JetBrains Mono', monospace;">
                 </div>
               </div>
               <div>
-                <label style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Content (Markdown)</label>
-                <textarea id="post-body" class="udop-resize-v" required placeholder="Write your post here... Use ## for headings, **bold**, *italic*, `code`, and - for lists." style="width:100%; height:250px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'Outfit', sans-serif; flex: 1;"></textarea>
+                <label
+                  style="font-size:0.7rem; color:var(--text-secondary); display:block; margin-bottom:0.2rem; text-align:left;">Content
+                  (Markdown)</label>
+                <textarea id="post-body" class="udop-resize-v" required
+                  placeholder="Write your post here... Use ## for headings, **bold**, *italic*, `code`, and - for lists."
+                  style="width:100%; height:250px; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-size:0.85rem; outline:none; font-family:'Outfit', sans-serif; flex: 1;"></textarea>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:0.5rem;">
+              <div
+                style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:0.5rem;">
                 <div style="display:flex; align-items:center; gap:0.35rem; font-size:0.8rem;">
                   <input type="checkbox" id="post-draft" style="cursor:pointer;">
-                  <label for="post-draft" style="cursor:pointer; color:var(--text-secondary);">Save as Draft (Hide from Blog list)</label>
+                  <label for="post-draft" style="cursor:pointer; color:var(--text-secondary);">Save as Draft (Hide from
+                    Blog list)</label>
                 </div>
                 <div style="display:flex; gap:0.4rem;">
-                  <button type="button" onclick="resetEditor()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.4rem 0.8rem; border-radius:4px; cursor:pointer; font-size:0.8rem; font-family:'Outfit', sans-serif;">CLEAR</button>
-                  <button type="submit" style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.4rem 1rem; border-radius:4px; font-weight:bold; cursor:pointer; font-size:0.8rem; font-family:'Outfit', sans-serif;">SAVE POST</button>
+                  <button type="button" onclick="resetEditor()"
+                    style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.4rem 0.8rem; border-radius:4px; cursor:pointer; font-size:0.8rem; font-family:'Outfit', sans-serif;">CLEAR</button>
+                  <button type="submit"
+                    style="background:var(--accent-green); color:var(--bg-primary); border:none; padding:0.4rem 1rem; border-radius:4px; font-weight:bold; cursor:pointer; font-size:0.8rem; font-family:'Outfit', sans-serif;">SAVE
+                    POST</button>
                 </div>
               </div>
             </form>
 
             <!-- MANAGE POSTS SECTION -->
             <div style="border-top:1px solid var(--border-color); padding-top:0.75rem; width:100%;">
-              <span style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; display:block; margin-bottom:0.4rem; text-align:left;">Posts Catalog</span>
-              <div id="admin-posts-catalog" class="udop-resize-v" style="display:flex; flex-direction:column; gap:0.4rem; height:200px; font-size:0.8rem; font-family:'JetBrains Mono', monospace; width:100%; flex: 1;">
+              <span
+                style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; display:block; margin-bottom:0.4rem; text-align:left;">Posts
+                Catalog</span>
+              <div id="admin-posts-catalog" class="udop-resize-v"
+                style="display:flex; flex-direction:column; gap:0.4rem; height:200px; font-size:0.8rem; font-family:'JetBrains Mono', monospace; width:100%; flex: 1;">
                 <!-- Catalog table rows injected here -->
               </div>
             </div>
@@ -677,16 +737,20 @@
 
         <!-- RSS NEWS TAB CONTENT -->
         <div id="rss-tab-content" class="tab-content" style="width:100%;">
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.25rem;">
-            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Live Amateur Radio Feeds</span>
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.25rem;">
+            <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Live Amateur Radio
+              Feeds</span>
             <div style="display:flex; align-items:center; gap:0.4rem;">
               <select id="rss-feed-select" onchange="loadRssFeed()"
                 style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.35rem 0.5rem; color:white; font-size:0.8rem; outline:none; font-family:'Outfit', sans-serif;">
                 <option value="https://www.arrl.org/arrl.rss">ARRL News</option>
-                <option value="https://forums.qrz.com/index.php?forums/news-and-announcements.14/index.rss">QRZ News</option>
+                <option value="https://forums.qrz.com/index.php?forums/news-and-announcements.14/index.rss">QRZ News
+                </option>
                 <option value="https://hackaday.com/tag/ham-radio/feed/">Hackaday (Ham Radio)</option>
               </select>
-              <button onclick="loadRssFeed()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.35rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">REFRESH</button>
+              <button onclick="loadRssFeed()"
+                style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); border-radius:3px; padding:0.35rem 0.6rem; font-size:0.75rem; cursor:pointer; font-weight:600; font-family:'Outfit', sans-serif;">REFRESH</button>
             </div>
           </div>
           <div id="rss-items-list" class="udop-resize-v"
@@ -709,7 +773,8 @@
           style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
           <div
             style="background:var(--bg-card); padding:0.4rem 0.6rem; border-radius:4px; border:1px solid var(--border-color); text-align:center;">
-            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Solar Flux</span>
+            <span style="font-size:0.65rem; color:var(--text-secondary); display:block; text-transform:uppercase;">Solar
+              Flux</span>
             <span style="font-size:1.1rem; color:var(--accent-amber); font-weight:bold;" id="sfi-val">142</span>
           </div>
           <div
@@ -768,15 +833,25 @@
           <span>Propagation Map</span>
           <span style="font-size:0.65rem; color:var(--accent-cyan);">GRAYLINE & MUF</span>
         </div>
-        <div style="position:relative; width:100%; aspect-ratio:2/1; background:#050508; border-radius:6px; border:1px solid var(--border-color); overflow:hidden;">
+        <div
+          style="position:relative; width:100%; aspect-ratio:2/1; background:#050508; border-radius:6px; border:1px solid var(--border-color); overflow:hidden;">
           <canvas id="prop-map-canvas" style="width:100%; height:100%; display:block;"></canvas>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-secondary); padding:0 0.1rem; flex-wrap:wrap; gap:0.25rem;">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-secondary); padding:0 0.1rem; flex-wrap:wrap; gap:0.25rem;">
           <div style="display:flex; gap:0.35rem; align-items:center;">
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(142,68,173,0.5); border-radius:50%;"></span> <span>&lt;10M</span>
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(46,204,113,0.5); border-radius:50%;"></span> <span>14M</span>
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(241,196,15,0.5); border-radius:50%;"></span> <span>21M</span>
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(231,76,60,0.5); border-radius:50%;"></span> <span>&gt;28M</span>
+            <span
+              style="display:inline-block; width:8px; height:8px; background:rgba(142,68,173,0.5); border-radius:50%;"></span>
+            <span>&lt;10M</span>
+            <span
+              style="display:inline-block; width:8px; height:8px; background:rgba(46,204,113,0.5); border-radius:50%;"></span>
+            <span>14M</span>
+            <span
+              style="display:inline-block; width:8px; height:8px; background:rgba(241,196,15,0.5); border-radius:50%;"></span>
+            <span>21M</span>
+            <span
+              style="display:inline-block; width:8px; height:8px; background:rgba(231,76,60,0.5); border-radius:50%;"></span>
+            <span>&gt;28M</span>
           </div>
           <span style="font-size:0.65rem; color:var(--text-secondary);">BLN: PA (FN20)</span>
         </div>
@@ -790,44 +865,66 @@
         </div>
         <div style="display:flex; flex-direction:column; gap:0.5rem;">
           <!-- MODE SWITCHER -->
-          <div style="display:flex; border:1px solid var(--border-color); border-radius:4px; overflow:hidden; background:var(--bg-primary);">
-            <button onclick="switchMorseMode('keyer')" id="m-btn-keyer" class="tab-btn active" style="flex:1; padding:0.3rem; font-size:0.7rem; font-weight:600; border:none; cursor:pointer; background:transparent;">KEYER</button>
-            <button onclick="switchMorseMode('trainer')" id="m-btn-trainer" class="tab-btn" style="flex:1; padding:0.3rem; font-size:0.7rem; font-weight:600; border:none; cursor:pointer; background:transparent; border-left:1px solid var(--border-color); border-right:1px solid var(--border-color);">TRAINER</button>
-            <button onclick="switchMorseMode('playback')" id="m-btn-playback" class="tab-btn" style="flex:1; padding:0.3rem; font-size:0.7rem; font-weight:600; border:none; cursor:pointer; background:transparent;">TEXT-TO-CW</button>
+          <div
+            style="display:flex; border:1px solid var(--border-color); border-radius:4px; overflow:hidden; background:var(--bg-primary);">
+            <button onclick="switchMorseMode('keyer')" id="m-btn-keyer" class="tab-btn active"
+              style="flex:1; padding:0.3rem; font-size:0.7rem; font-weight:600; border:none; cursor:pointer; background:transparent;">KEYER</button>
+            <button onclick="switchMorseMode('trainer')" id="m-btn-trainer" class="tab-btn"
+              style="flex:1; padding:0.3rem; font-size:0.7rem; font-weight:600; border:none; cursor:pointer; background:transparent; border-left:1px solid var(--border-color); border-right:1px solid var(--border-color);">TRAINER</button>
+            <button onclick="switchMorseMode('playback')" id="m-btn-playback" class="tab-btn"
+              style="flex:1; padding:0.3rem; font-size:0.7rem; font-weight:600; border:none; cursor:pointer; background:transparent;">TEXT-TO-CW</button>
           </div>
 
           <!-- 1. KEYER PANEL -->
-          <div id="morse-panel-keyer" class="morse-sub-panel active" style="display:flex; flex-direction:column; gap:0.5rem;">
-            <div style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; gap:0.25rem;">
-              <span style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase;">Decoded Text</span>
-              <div id="morse-output" style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-green); word-break:break-all; min-height:24px;"></div>
+          <div id="morse-panel-keyer" class="morse-sub-panel active"
+            style="display:flex; flex-direction:column; gap:0.5rem;">
+            <div
+              style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; gap:0.25rem;">
+              <span style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase;">Decoded
+                Text</span>
+              <div id="morse-output"
+                style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-green); word-break:break-all; min-height:24px;">
+              </div>
             </div>
           </div>
 
           <!-- 2. TRAINER PANEL -->
-          <div id="morse-panel-trainer" class="morse-sub-panel" style="display:none; flex-direction:column; gap:0.5rem;">
-            <div style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; gap:0.25rem;">
-              <div style="display:flex; justify-content:space-between; width:100%; font-size:0.65rem; color:var(--text-secondary);">
+          <div id="morse-panel-trainer" class="morse-sub-panel"
+            style="display:none; flex-direction:column; gap:0.5rem;">
+            <div
+              style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:60px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; gap:0.25rem;">
+              <div
+                style="display:flex; justify-content:space-between; width:100%; font-size:0.65rem; color:var(--text-secondary);">
                 <span>TARGET LETTER</span>
                 <span id="trainer-score">SCORE: 0/0</span>
               </div>
               <div style="display:flex; align-items:baseline; gap:0.5rem;">
-                <span id="trainer-target" style="font-size:1.8rem; font-weight:bold; color:var(--accent-cyan); font-family:'JetBrains Mono', monospace;">A</span>
-                <span id="trainer-hint" style="font-size:0.9rem; color:var(--text-secondary); font-family:'JetBrains Mono', monospace;">(.-)</span>
+                <span id="trainer-target"
+                  style="font-size:1.8rem; font-weight:bold; color:var(--accent-cyan); font-family:'JetBrains Mono', monospace;">A</span>
+                <span id="trainer-hint"
+                  style="font-size:0.9rem; color:var(--text-secondary); font-family:'JetBrains Mono', monospace;">(.-)</span>
               </div>
             </div>
           </div>
 
           <!-- 3. PLAYBACK PANEL -->
-          <div id="morse-panel-playback" class="morse-sub-panel" style="display:none; flex-direction:column; gap:0.5rem;">
+          <div id="morse-panel-playback" class="morse-sub-panel"
+            style="display:none; flex-direction:column; gap:0.5rem;">
             <div style="display:flex; gap:0.4rem;">
-              <input type="text" id="cw-text-input" placeholder="Type text to play..." style="flex:1; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'Outfit', sans-serif; font-size:0.8rem; outline:none;">
-              <button onclick="playCWSidetone()" style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); font-weight:600; padding:0 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer;">PLAY</button>
-              <button onclick="stopCWSidetone()" style="background:transparent; border:1px solid var(--border-color); color:#ff3b30; font-weight:600; padding:0 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer;">STOP</button>
+              <input type="text" id="cw-text-input" placeholder="Type text to play..."
+                style="flex:1; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; color:white; font-family:'Outfit', sans-serif; font-size:0.8rem; outline:none;">
+              <button onclick="playCWSidetone()"
+                style="background:transparent; border:1px solid var(--accent-cyan); color:var(--accent-cyan); font-weight:600; padding:0 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer;">PLAY</button>
+              <button onclick="stopCWSidetone()"
+                style="background:transparent; border:1px solid var(--border-color); color:#ff3b30; font-weight:600; padding:0 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer;">STOP</button>
             </div>
-            <div style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:40px; display:flex; flex-direction:column; gap:0.25rem;">
-              <span style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase;">Playing character</span>
-              <div id="cw-playback-highlight" style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-amber); min-height:20px;">-</div>
+            <div
+              style="background:var(--bg-card); padding:0.6rem; border-radius:6px; border:1px solid var(--border-color); min-height:40px; display:flex; flex-direction:column; gap:0.25rem;">
+              <span style="font-size:0.65rem; color:var(--text-secondary); text-transform:uppercase;">Playing
+                character</span>
+              <div id="cw-playback-highlight"
+                style="font-family:'JetBrains Mono', monospace; font-size:1.1rem; color:var(--accent-amber); min-height:20px;">
+                -</div>
             </div>
           </div>
 
@@ -835,14 +932,17 @@
           <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
             <div>
               <label style="color:var(--text-secondary); font-size:0.7rem;">WPM Speed</label>
-              <input type="range" id="wpm-slider" min="5" max="30" value="18" style="vertical-align:middle; width:80px; margin-left:0.4rem;">
+              <input type="range" id="wpm-slider" min="5" max="30" value="18"
+                style="vertical-align:middle; width:80px; margin-left:0.4rem;">
               <span id="wpm-label" style="font-family:'JetBrains Mono', monospace; margin-left:0.25rem;">18</span>
             </div>
-            <button onclick="clearMorseText()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.7rem; cursor:pointer; font-family:'Outfit', sans-serif;">Clear</button>
+            <button onclick="clearMorseText()"
+              style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.2rem 0.5rem; border-radius:4px; font-size:0.7rem; cursor:pointer; font-family:'Outfit', sans-serif;">Clear</button>
           </div>
 
           <!-- KEY BUTTON -->
-          <button id="morse-key-btn" style="background:var(--bg-card); border:2px solid var(--border-color); height:80px; border-radius:8px; cursor:pointer; color:var(--text-secondary); font-weight:bold; font-size:0.9rem; transition:all 0.1s ease; user-select:none; font-family:'Outfit', sans-serif; outline:none;">
+          <button id="morse-key-btn"
+            style="background:var(--bg-card); border:2px solid var(--border-color); height:80px; border-radius:8px; cursor:pointer; color:var(--text-secondary); font-weight:bold; font-size:0.9rem; transition:all 0.1s ease; user-select:none; font-family:'Outfit', sans-serif; outline:none;">
             PRESS SPACEBAR / HOLD CLICK
           </button>
         </div>
@@ -1132,7 +1232,7 @@
       if (isTrainerMode) {
         trainerState.total++;
         const keyBtn = document.getElementById('morse-key-btn');
-        
+
         if (char === trainerState.target) {
           trainerState.correct++;
           // Flash Green
@@ -1192,7 +1292,7 @@
     function switchMorseMode(mode) {
       document.querySelectorAll('.morse-sub-panel').forEach(p => p.style.display = 'none');
       document.getElementById(`morse-panel-${mode}`).style.display = 'flex';
-      
+
       const mSwitcher = document.getElementById('m-btn-keyer').parentNode;
       mSwitcher.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
       document.getElementById(`m-btn-${mode}`).classList.add('active');
@@ -1219,10 +1319,10 @@
       const textInput = document.getElementById('cw-text-input');
       const text = textInput ? textInput.value.toUpperCase().trim() : '';
       if (!text) return;
-      
+
       const wpm = parseInt(wpmSlider.value);
       const dotLength = 1200 / wpm; // ms
-      
+
       // Reverse lookup mapping for alphanumeric characters to dot-dash codes
       const REVERSE_MORSE = {};
       for (const [code, char] of Object.entries(MORSE_CODE)) {
@@ -1230,7 +1330,7 @@
       }
 
       let timeOffset = 0;
-      
+
       for (let i = 0; i < text.length; i++) {
         const char = text[i];
         if (char === ' ') {
@@ -1238,7 +1338,7 @@
           timeOffset += dotLength * 4;
           continue;
         }
-        
+
         const code = REVERSE_MORSE[char];
         if (!code) continue;
 
@@ -1270,7 +1370,7 @@
           // Inter-symbol gap: 1 dot length
           timeOffset += dotLength;
         }
-        
+
         // Inter-character gap: 3 dots total (already has 1 dot from last symbol, add 2 more)
         timeOffset += dotLength * 2;
       }
@@ -1292,7 +1392,7 @@
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const randChar = letters[Math.floor(Math.random() * letters.length)];
       trainerState.target = randChar;
-      
+
       // Find corresponding code
       let targetCode = '';
       for (const [code, char] of Object.entries(MORSE_CODE)) {
@@ -1314,10 +1414,10 @@
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      
+
       const activeContent = document.getElementById(`${tabId}-tab-content`);
       if (activeContent) activeContent.classList.add('active');
-      
+
       const activeBtn = Array.from(document.querySelectorAll('.tab-btn'))
         .find(btn => btn.getAttribute('onclick').includes(tabId));
       if (activeBtn) activeBtn.classList.add('active');
@@ -1412,7 +1512,7 @@
           const readTime = Math.max(1, Math.ceil(wordCount / 200));
 
           const date = new Date(p.timestamp);
-          const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
+          const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
 
           const card = document.createElement('div');
           card.className = 'blog-card';
@@ -1507,9 +1607,9 @@
 
       activePostId = postId;
       document.getElementById('reader-title').textContent = post.title;
-      
+
       const date = new Date(post.timestamp);
-      const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth()+1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')} UTC`;
+      const dateStr = `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')} UTC`;
       document.getElementById('reader-meta').innerHTML = `
         <span>Published: ${dateStr}</span>
         <span>Tags: ${post.tags.map(t => `#${t}`).join(', ')}</span>
@@ -1530,7 +1630,7 @@
     function renderComments(comments) {
       const list = document.getElementById('reader-comments');
       list.innerHTML = '';
-      
+
       if (!comments || comments.length === 0) {
         list.innerHTML = `<span style="color:var(--text-secondary); font-style:italic;">No comments yet. Be the first!</span>`;
         return;
@@ -1570,7 +1670,7 @@
       if (index === -1) return;
 
       if (!posts[index].comments) posts[index].comments = [];
-      
+
       posts[index].comments.push({
         name: nameInput.value.trim(),
         comment: commentInput.value.trim(),
@@ -1736,7 +1836,7 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         try {
           const posts = JSON.parse(e.target.result);
           if (Array.isArray(posts)) {
@@ -1785,7 +1885,7 @@
             const dims = JSON.parse(saved);
             if (dims.width) card.style.width = dims.width;
             if (dims.height) card.style.height = dims.height;
-          } catch (e) {}
+          } catch (e) { }
         }
         resizeObserver.observe(card);
       });
@@ -1809,7 +1909,7 @@
       cards.forEach((card, index) => {
         if (!card.id) card.id = `panel-${index}`;
         card.setAttribute('draggable', 'true');
-        
+
         card.addEventListener('dragstart', (e) => {
           if (!powerOn) {
             e.preventDefault();
@@ -1867,7 +1967,7 @@
       if (!saved) return;
       try {
         const order = JSON.parse(saved);
-        
+
         // Defensive check: reset the order if it contains legacy index-based IDs
         let hasLegacy = false;
         order.forEach(col => {
@@ -1893,13 +1993,13 @@
             if (card) col.appendChild(card);
           });
         });
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function initTabDragAndDrop() {
       const container = document.querySelector('.console-tabs');
       if (!container) return;
-      
+
       // Load saved order
       const saved = localStorage.getItem('ac3gx_tab_order');
       if (saved) {
@@ -1915,7 +2015,7 @@
               container.appendChild(buttons[tabName]);
             }
           });
-        } catch (e) {}
+        } catch (e) { }
       }
 
       let draggedTab = null;
@@ -1978,7 +2078,7 @@
     // NOAA Live Solar Conditions & Band Quality Analyzer
     async function fetchLiveSolarData() {
       if (!powerOn) return;
-      
+
       let sfiVal = 142;
       let ssnVal = 95;
       let aVal = 6;
@@ -2107,7 +2207,7 @@
         const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
         if (!res.ok) throw new Error('Network response not ok');
         const data = await res.json();
-        
+
         if (data.status === 'ok' && Array.isArray(data.items)) {
           renderRssItems(data.items);
         } else {
@@ -2145,7 +2245,7 @@
         }
 
         const date = new Date(item.pubDate.replace(/-/g, '/'));
-        const dateStr = isNaN(date.getTime()) ? item.pubDate : date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const dateStr = isNaN(date.getTime()) ? item.pubDate : date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         const card = document.createElement('div');
         card.className = 'blog-card';
@@ -2178,17 +2278,17 @@
     // Vector Longitude & Latitude Polygons for Continent Boundaries
     const MAP_CONTINENTS = [
       // North America
-      [[-168,65],[-120,69],[-80,70],[-60,60],[-55,48],[-80,25],[-99,15],[-105,20],[-115,30],[-125,48],[-160,58]],
+      [[-168, 65], [-120, 69], [-80, 70], [-60, 60], [-55, 48], [-80, 25], [-99, 15], [-105, 20], [-115, 30], [-125, 48], [-160, 58]],
       // South America
-      [[-80,10],[-50,-5],[-35,-7],[-40,-20],[-65,-45],[-75,-55],[-70,-35],[-75,-20],[-81,-5]],
+      [[-80, 10], [-50, -5], [-35, -7], [-40, -20], [-65, -45], [-75, -55], [-70, -35], [-75, -20], [-81, -5]],
       // Eurasia
-      [[-5,36],[20,40],[30,60],[60,70],[100,75],[140,72],[170,66],[140,35],[120,38],[108,18],[98,10],[77,8],[60,25],[45,15],[35,12],[30,30],[10,37]],
+      [[-5, 36], [20, 40], [30, 60], [60, 70], [100, 75], [140, 72], [170, 66], [140, 35], [120, 38], [108, 18], [98, 10], [77, 8], [60, 25], [45, 15], [35, 12], [30, 30], [10, 37]],
       // Africa
-      [[-17,32],[32,31],[34,27],[51,11],[46,-10],[40,-25],[33,-34],[18,-34],[10,-5],[-14,14]],
+      [[-17, 32], [32, 31], [34, 27], [51, 11], [46, -10], [40, -25], [33, -34], [18, -34], [10, -5], [-14, 14]],
       // Australia
-      [[113,-22],[135,-12],[142,-10],[153,-28],[148,-38],[115,-34],[113,-26]],
+      [[113, -22], [135, -12], [142, -10], [153, -28], [148, -38], [115, -34], [113, -26]],
       // Greenland
-      [[-50,60],[-40,60],[-30,70],[-40,80],[-60,80],[-55,70]]
+      [[-50, 60], [-40, 60], [-30, 70], [-40, 80], [-60, 80], [-55, 70]]
     ];
 
     function drawBaseMap(ctx, width, height) {
@@ -2223,7 +2323,7 @@
       const delta = declination;
       const lambda = lon * Math.PI / 180;
       const lambda0 = subsolarLon * Math.PI / 180;
-      
+
       // Return cosine of the solar zenith angle
       return Math.sin(phi) * Math.sin(delta) + Math.cos(phi) * Math.cos(delta) * Math.cos(lambda - lambda0);
     }
@@ -2231,7 +2331,7 @@
     function drawDayNightShadow(ctx, width, height, declination, subsolarLon) {
       const gridW = 4; // grid resolution in pixels
       const gridH = 4;
-      
+
       ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
       for (let y = 0; y < height; y += gridH) {
         const lat = 90 - (y / height) * 180;
@@ -2252,7 +2352,7 @@
       // Base peak and floor frequencies
       const mufDay = 10 + (sfi * 0.18);
       const mufNight = 6 + (sfi * 0.03);
-      
+
       // Geomagnetic storm penalty scaler
       let stormPenalty = 1.0;
       if (k >= 4) {
@@ -2267,7 +2367,7 @@
         for (let x = 0; x < width; x += stepX) {
           const lon = (x / width) * 360 - 180;
           const cosZ = getSolarZenithCos(lat, lon, declination, subsolarLon);
-          
+
           // Approximate zenith cosine modulation
           const zenithFactor = Math.max(0, cosZ);
           let muf = mufNight + (mufDay - mufNight) * Math.sqrt(zenithFactor);
@@ -2293,7 +2393,7 @@
     function renderPropagationMap(sfi, k) {
       const canvas = document.getElementById('prop-map-canvas');
       if (!canvas) return;
-      
+
       const ctx = canvas.getContext('2d');
       const w = canvas.width = canvas.offsetWidth || 300;
       const h = canvas.height = canvas.offsetHeight || 150;
@@ -2308,7 +2408,7 @@
       const diff = now - start;
       const oneDay = 1000 * 60 * 60 * 24;
       const dayOfYear = Math.floor(diff / oneDay);
-      
+
       const declination = getSolarDeclination(dayOfYear);
       // Subsolar longitude in degrees
       const subsolarLon = -15 * (now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600);
