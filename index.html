@@ -2289,9 +2289,36 @@
       }
 
       items.forEach(item => {
-        // Strip HTML from description
+        // Resolve absolute link
+        let itemLink = (item.link || item.guid || '').trim();
+        if (itemLink.startsWith('/')) {
+          itemLink = 'https://www.reddit.com' + itemLink;
+        }
+        if (!itemLink || (!itemLink.startsWith('http://') && !itemLink.startsWith('https://'))) {
+          itemLink = '#';
+        }
+
+        // Extract all links in the description
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = item.description || '';
+        
+        const anchors = Array.from(tempDiv.querySelectorAll('a'));
+        const linksList = [];
+        anchors.forEach(a => {
+          let href = (a.getAttribute('href') || '').trim();
+          if (href) {
+            if (href.startsWith('/')) {
+              href = 'https://www.reddit.com' + href;
+            }
+            const text = (a.textContent || a.innerText || '').trim();
+            // Avoid duplicate links or useless hashes
+            if (href !== '#' && !href.startsWith('javascript:') && !linksList.some(l => l.href === href)) {
+              linksList.push({ href, text: text || href });
+            }
+          }
+        });
+
+        // Strip HTML from description for summary
         let summary = tempDiv.textContent || tempDiv.innerText || '';
         summary = summary.replace(/\s+/g, ' ').trim();
         if (summary.length > 200) {
@@ -2312,18 +2339,30 @@
         card.style.gap = '0.35rem';
         card.style.textAlign = 'left';
 
+        // Render card content
+        let linksSection = '';
+        if (linksList.length > 0) {
+          linksSection = `
+            <div style="font-size:0.75rem; margin-top:0.35rem; display:flex; flex-wrap:wrap; gap:0.4rem; border-top:1px dashed var(--border-color); padding-top:0.35rem;">
+              <span style="color:var(--text-secondary); font-weight:bold; margin-right:0.25rem;">LINKS:</span>
+              ${linksList.map(l => `<a href="${l.href}" target="_blank" style="color:var(--accent-cyan); text-decoration:underline;">${l.text.substring(0, 40)}${l.text.length > 40 ? '...' : ''}</a>`).join('<span style="color:var(--border-color);">|</span>')}
+            </div>
+          `;
+        }
+
         card.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
-            <a href="${item.link}" target="_blank" style="color:var(--accent-cyan); font-weight:600; text-decoration:none; font-size:0.9rem; line-height:1.2; display:block;">
+            <a href="${itemLink}" target="_blank" style="color:var(--accent-cyan); font-weight:600; text-decoration:none; font-size:0.9rem; line-height:1.2; display:block;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
               ${item.title}
             </a>
           </div>
           <div style="font-family:'JetBrains Mono', monospace; font-size:0.7rem; color:var(--text-secondary);">
             PUB DATE: ${dateStr}
           </div>
-          <div style="font-size:0.8rem; color:var(--text-primary); line-height:1.4;">
+          <div style="font-size:0.8rem; color:var(--text-primary); line-height:1.4; word-break:break-word;">
             ${summary}
           </div>
+          ${linksSection}
         `;
         container.appendChild(card);
       });
