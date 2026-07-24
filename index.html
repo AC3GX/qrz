@@ -487,15 +487,15 @@
       <div class="console-card" id="main-console-card">
         <div class="card-header" style="padding-bottom:0.25rem; border-bottom:1px solid var(--border-color);">
           <div class="console-tabs">
-            <button class="tab-btn active" data-tab="logbook" onclick="switchTab('logbook')">QSO Logbook</button>
+            <button class="tab-btn" data-tab="logbook" onclick="switchTab('logbook')">QSO Logbook</button>
             <button class="tab-btn" data-tab="blog" onclick="switchTab('blog')">Station Blog</button>
-            <button class="tab-btn" data-tab="rss" onclick="switchTab('rss')">Radio News</button>
+            <button class="tab-btn active" data-tab="rss" onclick="switchTab('rss')">Radio News</button>
             <button class="tab-btn" data-tab="admin" onclick="switchTab('admin')">Admin Console</button>
           </div>
         </div>
 
         <!-- LOGBOOK TAB CONTENT -->
-        <div id="logbook-tab-content" class="tab-content active">
+        <div id="logbook-tab-content" class="tab-content">
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
             <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Digital Modes
               Contact Logger</span>
@@ -736,7 +736,7 @@
         </div>
 
         <!-- RSS NEWS TAB CONTENT -->
-        <div id="rss-tab-content" class="tab-content" style="width:100%;">
+        <div id="rss-tab-content" class="tab-content active" style="width:100%;">
           <div
             style="display:flex; justify-content:space-between; align-items:center; width:100%; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.25rem;">
             <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Live Amateur Radio
@@ -2551,6 +2551,7 @@
     setPowerState(powerOn);
     renderQSOs();
     renderBlogList();
+    loadRssFeed();
     initPanelResizing();
     initDragAndDrop();
     initTabDragAndDrop();
