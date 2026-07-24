@@ -984,10 +984,40 @@
       }
     }
 
+    function getSyncKey() {
+      const path = window.location.pathname || 'default';
+      let hash = 0;
+      for (let i = 0; i < path.length; i++) {
+        hash = (hash << 5) - hash + path.charCodeAt(i);
+        hash |= 0;
+      }
+      const base36 = Math.abs(hash).toString(36);
+      return (base36 + 'ac3gx123').substring(0, 8);
+    }
+
     function togglePower() {
       setPowerState(!powerOn);
       localStorage.setItem('ac3gx_power_on', powerOn);
+      fetch(`https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/${getSyncKey()}/powerState/${powerOn}`, { method: 'POST' })
+        .catch(() => {});
     }
+
+    async function syncPowerState() {
+      try {
+        const res = await fetch(`https://keyvalue.immanuel.co/api/KeyVal/GetValue/${getSyncKey()}/powerState`);
+        if (!res.ok) return;
+        const text = await res.text();
+        if (text.includes('true') || text.includes('false')) {
+          const remoteState = text.includes('true');
+          if (powerOn !== remoteState) {
+            setPowerState(remoteState);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Poll for cross-tab / cross-browser state changes every 2 seconds
+    setInterval(syncPowerState, 2000);
 
     window.addEventListener('storage', (e) => {
       if (e.key === 'ac3gx_power_on') {
