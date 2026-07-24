@@ -801,8 +801,12 @@
 
         <div style="border-top:1px solid var(--border-color); padding-top:0.75rem; margin-top:0.25rem;">
           <div
-            style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.5rem; font-weight:600; text-align:left;">
+            style="font-size:0.75rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.4rem; font-weight:600; text-align:left;">
             HF Band Conditions</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-primary); border-bottom: 1px dashed var(--border-color); padding-bottom: 0.4rem;">
+            <span>Local MUF: <strong id="local-muf-val" style="color:var(--accent-cyan);">--</strong> MHz</span>
+            <span>Local LUF: <strong id="local-luf-val" style="color:var(--accent-cyan);">--</strong> MHz</span>
+          </div>
           <div
             style="display:grid; grid-template-columns: repeat(2, 1fr); gap:0.5rem; font-size:0.75rem; font-family:'JetBrains Mono', monospace;">
             <div
@@ -2194,38 +2198,56 @@
     }
 
     function updateHFBands(sfi, k) {
-      let b80_40 = "GOOD";
-      let b30_20 = "GOOD";
-      let b17_15 = "FAIR";
-      let b12_10 = "POOR";
+      // 1. Calculate local MUF and LUF for Pennsylvania (Latitude: 40.0, Longitude: -75.3)
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const oneDay = 1000 * 60 * 60 * 24;
+      const dayOfYear = Math.floor(diff / oneDay);
+      
+      const declination = getSolarDeclination(dayOfYear);
+      const subsolarLon = -15 * (now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600);
+      
+      const cosZ = getSolarZenithCos(40.0, -75.3, declination, subsolarLon);
+      const zenithFactor = Math.max(0, cosZ);
+      
+      const mufDay = 10 + (sfi * 0.18);
+      const mufNight = 6 + (sfi * 0.03);
+      
+      let stormPenalty = 1.0;
+      if (k >= 4) {
+        stormPenalty = Math.max(0.5, 1.0 - (k - 3) * 0.12);
+      }
+      
+      const localMuf = (mufNight + (mufDay - mufNight) * Math.sqrt(zenithFactor)) * stormPenalty;
+      const localLuf = 1.8 + (1.2 + (sfi * 0.015)) * Math.sqrt(zenithFactor);
+      
+      // Update UI displays
+      const mufEl = document.getElementById('local-muf-val');
+      if (mufEl) mufEl.textContent = localMuf.toFixed(1);
+      const lufEl = document.getElementById('local-luf-val');
+      if (lufEl) lufEl.textContent = localLuf.toFixed(1);
 
+      // 2. Determine band quality based on whether bands are between LUF and MUF
+      const checkBand = (freqMin, freqMax) => {
+        if (freqMax < localLuf || freqMin > localMuf) return "POOR";
+        if (freqMin < localLuf + 1.0 || freqMax > localMuf - 1.0) return "FAIR";
+        return "GOOD";
+      };
+
+      let b80_40 = checkBand(3.5, 7.3);
+      let b30_20 = checkBand(10.1, 14.35);
+      let b17_15 = checkBand(18.06, 21.45);
+      let b12_10 = checkBand(24.89, 29.7);
+
+      // Apply K-index storm penalty override
       if (k >= 5) {
-        b80_40 = "POOR";
-        b30_20 = "POOR";
-        b17_15 = "POOR";
-        b12_10 = "POOR";
+        b80_40 = "POOR"; b30_20 = "POOR"; b17_15 = "POOR"; b12_10 = "POOR";
       } else if (k >= 4) {
-        b80_40 = "FAIR";
-        b30_20 = "FAIR";
+        if (b80_40 === "GOOD") b80_40 = "FAIR";
+        if (b30_20 === "GOOD") b30_20 = "FAIR";
         b17_15 = "POOR";
         b12_10 = "POOR";
-      } else {
-        if (sfi < 90) {
-          b80_40 = "GOOD";
-          b30_20 = "FAIR";
-          b17_15 = "POOR";
-          b12_10 = "POOR";
-        } else if (sfi >= 90 && sfi < 130) {
-          b80_40 = "GOOD";
-          b30_20 = "GOOD";
-          b17_15 = "FAIR";
-          b12_10 = "POOR";
-        } else {
-          b80_40 = "FAIR";
-          b30_20 = "GOOD";
-          b17_15 = "GOOD";
-          b12_10 = "FAIR";
-        }
       }
 
       setBandStatus('band-80-40', b80_40);
