@@ -781,10 +781,13 @@
           <!-- VIEWER VIEW -->
           <div id="docs-viewer-view" style="display:none; flex-direction:column; gap:0.75rem; width:100%; height:100%;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; width:100%;">
-              <h3 id="docs-viewer-title" style="color:var(--accent-green); margin:0; font-size:1rem;"></h3>
-              <button onclick="closeDocViewer()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[BACK TO CATALOG]</button>
+              <h3 id="docs-viewer-title" style="color:var(--accent-green); margin:0; font-size:1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;"></h3>
+              <div style="display:flex; gap:0.4rem; align-items:center;">
+                <a id="docs-external-link" href="#" target="_blank" style="background:var(--accent-cyan); color:var(--bg-primary); border:none; padding:0.25rem 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:bold; text-decoration:none; font-family:'Outfit', sans-serif;">OPEN IN NEW TAB</a>
+                <button onclick="closeDocViewer()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[BACK]</button>
+              </div>
             </div>
-            <div id="docs-frame-container" style="width:100%; height:500px; flex:1; background:#050508; border-radius:6px; overflow:hidden; border:1px solid var(--border-color);">
+            <div id="docs-frame-container" style="width:100%; height:500px; flex:1; background:#050508; border-radius:6px; overflow:hidden; border:1px solid var(--border-color); display:flex; flex-direction:column;">
               <!-- Iframe for PDFs or div for MD goes here -->
             </div>
           </div>
@@ -1055,8 +1058,23 @@
       const container = document.getElementById('docs-frame-container');
       if (!container) return;
 
+      const extLink = document.getElementById('docs-external-link');
+      if (extLink) {
+        extLink.href = doc.path;
+        extLink.style.display = 'inline-block';
+      }
+
       if (doc.type === 'pdf') {
-        container.innerHTML = `<iframe src="${doc.path}" style="width:100%; height:100%; border:none;"></iframe>`;
+        container.innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; padding:2.5rem; text-align:center; box-sizing:border-box;">
+            <span style="font-size:2.5rem; margin-bottom:0.75rem;">📄</span>
+            <span style="font-size:0.95rem; color:var(--text-primary); margin-bottom:0.5rem; font-weight:bold;">PDF Document Sandbox Viewer</span>
+            <span style="font-size:0.8rem; color:var(--text-secondary); max-width:450px; margin-bottom:1.5rem; line-height:1.5;">
+              If your browser blocks embedding local PDFs due to file-origin security policies (common in Chrome/Edge), click the <strong>OPEN IN NEW TAB</strong> button above.
+            </span>
+            <iframe src="${doc.path}" style="width:100%; height:100%; border:none; flex:1; background:white; border-radius:4px;"></iframe>
+          </div>
+        `;
       } else if (doc.type === 'md') {
         container.innerHTML = '<div style="text-align:center; padding:3rem; color:var(--accent-cyan);">[LOADING DOCUMENT...]</div>';
         fetch(doc.path)
@@ -1082,8 +1100,15 @@
           })
           .catch(err => {
             container.innerHTML = `
-              <div style="text-align:center; padding:3rem; color:#ff3b30;">
-                <strong>[ERROR LOADING DOCUMENT]</strong><br>${err.message}
+              <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; width:100%; padding:2rem; text-align:center; box-sizing:border-box;">
+                <span style="font-size:2.5rem; margin-bottom:1rem;">📝</span>
+                <span style="font-size:0.9rem; color:#ff3b30; margin-bottom:0.5rem; font-weight:bold;">Local Load Blocked</span>
+                <span style="font-size:0.8rem; color:var(--text-secondary); max-width:450px; margin-bottom:1.5rem; line-height:1.5;">
+                  Modern browsers block requests to local files via scripts. Please click the <strong>OPEN IN NEW TAB</strong> button above to read the document.
+                </span>
+                <div style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:#ff3b30; background:var(--bg-primary); border:1px solid var(--border-color); padding:0.5rem 0.75rem; border-radius:4px; max-width:90%;">
+                  Error details: ${err.message}
+                </div>
               </div>
             `;
           });
