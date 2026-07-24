@@ -491,6 +491,7 @@
             <button class="tab-btn" data-tab="blog" onclick="switchTab('blog')">Station Blog</button>
             <button class="tab-btn active" data-tab="rss" onclick="switchTab('rss')">Radio News</button>
             <button class="tab-btn" data-tab="admin" onclick="switchTab('admin')">Admin Console</button>
+            <button class="tab-btn" data-tab="docs" onclick="switchTab('docs')">Documentation</button>
           </div>
         </div>
 
@@ -759,6 +760,33 @@
           <div id="rss-items-list" class="udop-resize-v"
             style="display:flex; flex-direction:column; gap:0.75rem; height:400px; overflow-y:auto; padding-right:0.25rem; width:100%; flex:1;">
             <!-- RSS articles dynamically loaded here -->
+          </div>
+        </div>
+
+        <!-- DOCUMENTATION TAB CONTENT -->
+        <div id="docs-tab-content" class="tab-content" style="width:100%;">
+          <!-- CATALOG VIEW -->
+          <div id="docs-catalog-view" style="display:flex; flex-direction:column; gap:0.75rem; width:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+              <span style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase;">Equipment Documentation</span>
+              <input type="text" id="docs-search" oninput="filterDocs()" placeholder="Search manuals..." 
+                style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:4px; padding:0.4rem; width:100%; max-width:200px; color:white; font-size:0.8rem; outline:none;">
+            </div>
+            <div id="docs-catalog-list" class="udop-resize-v" 
+              style="display:flex; flex-direction:column; gap:0.6rem; height:400px; overflow-y:auto; padding-right:0.25rem; width:100%; flex:1;">
+              <!-- Manual item cards injected here -->
+            </div>
+          </div>
+
+          <!-- VIEWER VIEW -->
+          <div id="docs-viewer-view" style="display:none; flex-direction:column; gap:0.75rem; width:100%; height:100%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; width:100%;">
+              <h3 id="docs-viewer-title" style="color:var(--accent-green); margin:0; font-size:1rem;"></h3>
+              <button onclick="closeDocViewer()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:0.25rem 0.5rem; border-radius:4px; font-size:0.75rem; cursor:pointer; font-family:'Outfit', sans-serif;">[BACK TO CATALOG]</button>
+            </div>
+            <div id="docs-frame-container" style="width:100%; height:500px; flex:1; background:#050508; border-radius:6px; overflow:hidden; border:1px solid var(--border-color);">
+              <!-- Iframe for PDFs or div for MD goes here -->
+            </div>
           </div>
         </div>
       </div>
